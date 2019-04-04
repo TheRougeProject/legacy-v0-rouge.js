@@ -1,11 +1,11 @@
-# rouge
+# rouge.js
 
 <!--
 ![Node](https://img.shields.io/node/v/rouge.svg?style=flat-square)
 [![NPM](https://img.shields.io/npm/v/rouge.svg?style=flat-square)](https://www.npmjs.com/package/rouge)
-[![Travis](https://img.shields.io/travis/clbrge/rouge/master.svg?style=flat-square)](https://travis-ci.org/clbrge/rouge)
-[![David](https://img.shields.io/david/clbrge/rouge.svg?style=flat-square)](https://david-dm.org/clbrge/rouge)
-[![Coverage Status](https://img.shields.io/coveralls/clbrge/rouge.svg?style=flat-square)](https://coveralls.io/github/clbrge/rouge)
+[![Travis](https://img.shields.io/travis/TheRougeProject/rouge.js/master.svg?style=flat-square)](https://travis-ci.org/TheRougeProject/rouge.js)
+[![David](https://img.shields.io/david/TheRougeProject/rouge.js.svg?style=flat-square)](https://david-dm.org/TheRougeProject/rouge.js)
+[![Coverage Status](https://img.shields.io/coveralls/TheRougeProject/rouge.js.svg?style=flat-square)](https://coveralls.io/github/TheRougeProject/rouge.js)
 [![NPM](https://img.shields.io/npm/dt/rouge.svg?style=flat-square)](https://www.npmjs.com/package/rouge)
 -->
 
@@ -14,7 +14,7 @@
 ### Usage
 
 ```js
-import rouge from 'rouge'
+import rouge from 'rouge.js'
 
 ```
 <!--
@@ -27,14 +27,13 @@ Install via [yarn](https://github.com/yarnpkg/yarn)
 or npm
 
 	npm install rouge (--save-dev)
--->
 
 ### configuration
 
 You can pass in extra options as a configuration object (➕ required, ➖ optional, ✏️ default).
 
 ```js
-import rouge from 'rouge';
+import rouge from 'rouge'
 
 ```
 
@@ -43,11 +42,12 @@ import rouge from 'rouge';
 <br/> ❗️ warning
 <br/> ℹ️ info
 <br/> 💡 example
+-->
 
 <!--
 ### Examples
 
-See [`example`](example/script.js) folder or the [runkit](https://runkit.com/clbrge/rouge) example.
+See [`example`](example/script.js) folder or the [runkit](https://runkit.com/TheRougeProject/rouge.js) example.
 
 ### Builds
 

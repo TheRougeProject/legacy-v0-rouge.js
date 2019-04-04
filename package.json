@@ -1,6 +1,6 @@
 {
-  "name": "rouge",
-  "version": "0.1.4",
+  "name": "rouge.js",
+  "version": "0.1.5",
   "description": "Javascript library for interacting with the Rouge protocol",
   "main": "dist/cjs/index.js",
   "browser": "dist/umd/rouge.js",
@@ -35,10 +35,10 @@
     "build:cjs": "rimraf dist/cjs && cross-env BABEL_ENV=cjs babel src --out-dir dist/cjs",
     "build:umd": "rimraf dist/umd && cross-env BABEL_ENV=es rollup -c & cross-env BABEL_ENV=es NODE_ENV=production rollup -c"
   },
-  "keywords": [],
+  "keywords": ["rouge.js", "ethereum", "rge", "coupon", "ticket", "voucher"],
   "author": "Christophe Le Bars (clb@rouge.network)",
   "license": "ISC",
-  "repository": "clbrge/rouge",
+  "repository": "TheRougeProject/rouge.js",
   "jest": {
     "transform": {
       ".js$": "babel-7-jest"

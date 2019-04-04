@@ -1,16 +1,15 @@
-# Contributing to 'rouge'
+# Contributing to 'rouge.js'
 
 ## Support / Questions
 
-For **support or usage questions** like "How do I do X with rouge." and "My code doesn't work.", please join our telegram
-channel.
+For **support or usage questions** like "How do I do X with rouge." and "My code doesn't work.", please join our . **[telegram channel](https://t.me/rougetoken)**
 
 ## Bugs
 
 > The ideal GitHub issue (and even some feature requests) is not an issue, it's a PR with a failing test case.
 <br/> [@rauchg](https://twitter.com/rauchg/status/810589655532007424)
 
-**Before filing an issue please [search the issue tracker](https://github.com/clbrge/rouge/issues); your issue may have already been discussed or fixed in `master`.**
+**Before filing an issue please [search the issue tracker](https://github.com/TheRougeProject/rouge.js/issues); your issue may have already been discussed or fixed in `master`.**
 
 **If you want your issue to get priority, submit it as a PR instead**
 
@@ -19,14 +18,14 @@ channel.
 ## Feature / Enhancement Requests
 
 Feature or enhancement requests should be **submitted** in the
-[issue tracker](https://github.com/clbrge/rouge/issues), with a **description** (follow the template) of the expected behavior & use case, where they’ll remain until **approval** by the **lead maintainer(s) and/or enough interest** from the **community**.
+[issue tracker](https://github.com/TheRougeProject/rouge.js/issues), with a **description** (follow the template) of the expected behavior & use case, where they’ll remain until **approval** by the **lead maintainer(s) and/or enough interest** from the **community**.
 
 You can **request** a feature by **writing a pull request**, but this is **no guarantee** it will be **merged**.
 
 <!--
 ## 'help wanted' label
 
-There are issues marked with the **['help wanted'](https://github.com/clbrge/rouge/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)** label. <br/>This is a perfect start if you want to help out with the further development of rouge.
+There are issues marked with the **['help wanted'](https://github.com/TheRougeProject/rouge.js/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)** label. <br/>This is a perfect start if you want to help out with the further development of rouge.
 -->
 
 ## Pull Requests (PR)
@@ -34,7 +33,7 @@ There are issues marked with the **['help wanted'](https://github.com/clbrge/rou
 In general, the contribution workflow looks like this:
 
 1. **Fork** the repo.
-2. **Clone** the repo. `git clone https://github.com/your-username/rouge.git`.
+2. **Clone** the repo. `git clone https://github.com/your-username/rouge.js.git`.
 3. Create a **new branch** based off the master branch, provide a **descriptive name** <br/>(ex. '**feat**-add-better-logging', '**bug**-removed-double-method', '**enh**-bumped-eslint')
 4. Before running the code you’ll need to **install** the **dependencies** (`npm install` or `yarn`).
 5. **Implement** your feature / bugfix (using the **watch scripts**), you should **only need to modify `/src`**. Don’t worry about regenerating the build folder `/dist`, it is **built** in the **prepublish** phase.
