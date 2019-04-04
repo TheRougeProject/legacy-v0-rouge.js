@@ -1,0 +1,944 @@
+{
+  "contractName": "RougeFactoryInterface",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "rge",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "tare",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "issuer",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "campaign",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "_issuance",
+          "type": "uint32"
+        }
+      ],
+      "name": "NewRougeCampaign",
+      "type": "event"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_rge",
+          "type": "address"
+        },
+        {
+          "name": "_tare",
+          "type": "uint256"
+        }
+      ],
+      "name": "setParams",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_issuer",
+          "type": "address"
+        },
+        {
+          "name": "_issuance",
+          "type": "uint32"
+        },
+        {
+          "name": "_tokens",
+          "type": "uint256"
+        }
+      ],
+      "name": "createCampaign",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "/*\n\n  Abstract contract for Rouge Factory contracts\n\n*/\n\npragma solidity ^0.4.24;\n\nimport \"./RGETokenInterface.sol\";\n\ncontract RougeFactoryInterface {\n    \n    // The Rouge Token contract address\n    RGETokenInterface public rge;\n\n    // Price in RGE of the tare deposit (per token)\n    uint256 public tare;\n\n    // owner of the factory\n    address owner;\n\n    // owner can (re)set tare price or RGE contract address\n    function setParams (address _rge, uint256 _tare) public;\n\n    event NewRougeCampaign(address issuer, address campaign, uint32 _issuance);\n\n    function createCampaign(address _issuer, uint32 _issuance, uint256 _tokens) public;\n\n}\n",
+  "sourcePath": "/home/clb/notes/rouge/repositories/rge/protocol/contracts/RougeFactoryInterface.sol",
+  "ast": {
+    "absolutePath": "/home/clb/notes/rouge/repositories/rge/protocol/contracts/RougeFactoryInterface.sol",
+    "exportedSymbols": {
+      "RougeFactoryInterface": [
+        2037
+      ]
+    },
+    "id": 2038,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 2005,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".24"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "57:24:7"
+      },
+      {
+        "absolutePath": "/home/clb/notes/rouge/repositories/rge/protocol/contracts/RGETokenInterface.sol",
+        "file": "./RGETokenInterface.sol",
+        "id": 2006,
+        "nodeType": "ImportDirective",
+        "scope": 2038,
+        "sourceUnit": 1191,
+        "src": "83:33:7",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 2037,
+        "linearizedBaseContracts": [
+          2037
+        ],
+        "name": "RougeFactoryInterface",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 2008,
+            "name": "rge",
+            "nodeType": "VariableDeclaration",
+            "scope": 2037,
+            "src": "200:28:7",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_contract$_RGETokenInterface_$1190",
+              "typeString": "contract RGETokenInterface"
+            },
+            "typeName": {
+              "contractScope": null,
+              "id": 2007,
+              "name": "RGETokenInterface",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 1190,
+              "src": "200:17:7",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_RGETokenInterface_$1190",
+                "typeString": "contract RGETokenInterface"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 2010,
+            "name": "tare",
+            "nodeType": "VariableDeclaration",
+            "scope": 2037,
+            "src": "287:19:7",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 2009,
+              "name": "uint256",
+              "nodeType": "ElementaryTypeName",
+              "src": "287:7:7",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 2012,
+            "name": "owner",
+            "nodeType": "VariableDeclaration",
+            "scope": 2037,
+            "src": "341:13:7",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 2011,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "341:7:7",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 2019,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "setParams",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2017,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2014,
+                  "name": "_rge",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2019,
+                  "src": "441:12:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 2013,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "441:7:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2016,
+                  "name": "_tare",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2019,
+                  "src": "455:13:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 2015,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "455:7:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "440:29:7"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 2018,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "476:0:7"
+            },
+            "scope": 2037,
+            "src": "421:56:7",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 2027,
+            "name": "NewRougeCampaign",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 2026,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2021,
+                  "indexed": false,
+                  "name": "issuer",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2027,
+                  "src": "506:14:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 2020,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "506:7:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2023,
+                  "indexed": false,
+                  "name": "campaign",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2027,
+                  "src": "522:16:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 2022,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "522:7:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2025,
+                  "indexed": false,
+                  "name": "_issuance",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2027,
+                  "src": "540:16:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint32",
+                    "typeString": "uint32"
+                  },
+                  "typeName": {
+                    "id": 2024,
+                    "name": "uint32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "540:6:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint32",
+                      "typeString": "uint32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "505:52:7"
+            },
+            "src": "483:75:7"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 2036,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "createCampaign",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2034,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2029,
+                  "name": "_issuer",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2036,
+                  "src": "588:15:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 2028,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "588:7:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2031,
+                  "name": "_issuance",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2036,
+                  "src": "605:16:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint32",
+                    "typeString": "uint32"
+                  },
+                  "typeName": {
+                    "id": 2030,
+                    "name": "uint32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "605:6:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint32",
+                      "typeString": "uint32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2033,
+                  "name": "_tokens",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2036,
+                  "src": "623:15:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 2032,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "623:7:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "587:52:7"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 2035,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "646:0:7"
+            },
+            "scope": 2037,
+            "src": "564:83:7",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 2038,
+        "src": "118:532:7"
+      }
+    ],
+    "src": "57:594:7"
+  },
+  "legacyAST": {
+    "absolutePath": "/home/clb/notes/rouge/repositories/rge/protocol/contracts/RougeFactoryInterface.sol",
+    "exportedSymbols": {
+      "RougeFactoryInterface": [
+        2037
+      ]
+    },
+    "id": 2038,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 2005,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".24"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "57:24:7"
+      },
+      {
+        "absolutePath": "/home/clb/notes/rouge/repositories/rge/protocol/contracts/RGETokenInterface.sol",
+        "file": "./RGETokenInterface.sol",
+        "id": 2006,
+        "nodeType": "ImportDirective",
+        "scope": 2038,
+        "sourceUnit": 1191,
+        "src": "83:33:7",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 2037,
+        "linearizedBaseContracts": [
+          2037
+        ],
+        "name": "RougeFactoryInterface",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 2008,
+            "name": "rge",
+            "nodeType": "VariableDeclaration",
+            "scope": 2037,
+            "src": "200:28:7",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_contract$_RGETokenInterface_$1190",
+              "typeString": "contract RGETokenInterface"
+            },
+            "typeName": {
+              "contractScope": null,
+              "id": 2007,
+              "name": "RGETokenInterface",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 1190,
+              "src": "200:17:7",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_RGETokenInterface_$1190",
+                "typeString": "contract RGETokenInterface"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 2010,
+            "name": "tare",
+            "nodeType": "VariableDeclaration",
+            "scope": 2037,
+            "src": "287:19:7",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 2009,
+              "name": "uint256",
+              "nodeType": "ElementaryTypeName",
+              "src": "287:7:7",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "constant": false,
+            "id": 2012,
+            "name": "owner",
+            "nodeType": "VariableDeclaration",
+            "scope": 2037,
+            "src": "341:13:7",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 2011,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "341:7:7",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 2019,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "setParams",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2017,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2014,
+                  "name": "_rge",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2019,
+                  "src": "441:12:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 2013,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "441:7:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2016,
+                  "name": "_tare",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2019,
+                  "src": "455:13:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 2015,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "455:7:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "440:29:7"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 2018,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "476:0:7"
+            },
+            "scope": 2037,
+            "src": "421:56:7",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 2027,
+            "name": "NewRougeCampaign",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 2026,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2021,
+                  "indexed": false,
+                  "name": "issuer",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2027,
+                  "src": "506:14:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 2020,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "506:7:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2023,
+                  "indexed": false,
+                  "name": "campaign",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2027,
+                  "src": "522:16:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 2022,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "522:7:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2025,
+                  "indexed": false,
+                  "name": "_issuance",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2027,
+                  "src": "540:16:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint32",
+                    "typeString": "uint32"
+                  },
+                  "typeName": {
+                    "id": 2024,
+                    "name": "uint32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "540:6:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint32",
+                      "typeString": "uint32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "505:52:7"
+            },
+            "src": "483:75:7"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "id": 2036,
+            "implemented": false,
+            "isConstructor": false,
+            "isDeclaredConst": false,
+            "modifiers": [],
+            "name": "createCampaign",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2034,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2029,
+                  "name": "_issuer",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2036,
+                  "src": "588:15:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 2028,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "588:7:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2031,
+                  "name": "_issuance",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2036,
+                  "src": "605:16:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint32",
+                    "typeString": "uint32"
+                  },
+                  "typeName": {
+                    "id": 2030,
+                    "name": "uint32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "605:6:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint32",
+                      "typeString": "uint32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2033,
+                  "name": "_tokens",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2036,
+                  "src": "623:15:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 2032,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "623:7:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "587:52:7"
+            },
+            "payable": false,
+            "returnParameters": {
+              "id": 2035,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "646:0:7"
+            },
+            "scope": 2037,
+            "src": "564:83:7",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "public"
+          }
+        ],
+        "scope": 2038,
+        "src": "118:532:7"
+      }
+    ],
+    "src": "57:594:7"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.24+commit.e67f0147.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "2.0.1",
+  "updatedAt": "2018-08-28T02:06:16.534Z"
+}

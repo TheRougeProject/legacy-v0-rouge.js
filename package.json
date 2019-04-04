@@ -1,0 +1,87 @@
+{
+  "name": "rouge",
+  "version": "0.1.4",
+  "description": "Javascript library for interacting with the Rouge protocol",
+  "main": "dist/cjs/index.js",
+  "browser": "dist/umd/rouge.js",
+  "module": "dist/es/index.js",
+  "jsxnext:main": "dist/es/index.js",
+  "bin": {
+    "rouge-cli": "dist/es/cli.js"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "scripts": {
+    "prepublish": "yarn run build",
+    "precommit": "yarn run lint:test",
+    "prepush": "yarn run lint:test",
+    "release": "release-it",
+    "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
+    "cli": "NODE_ENV=test nodemon --exec babel-node src/cli.js",
+    "lint": "yarn run lint:eslint",
+    "lint:eslint": "eslint src/*.js __tests__/*.js",
+    "test": "jest",
+    "test:coverage": "jest --coverage ",
+    "test:watch": "clear && jest --watch",
+    "lint:test": "yarn run lint && yarn run test:coverage",
+    "build": "yarn run lint:test && yarn run build:cjs && yarn run build:es",
+    "build:watch": "clear && rimraf dist/cjs && cross-env BABEL_ENV=cjs babel -w src --out-dir dist/cjs",
+    "build:es": "rimraf dist/es && cross-env BABEL_ENV=es babel src --out-dir dist/es",
+    "build:cjs": "rimraf dist/cjs && cross-env BABEL_ENV=cjs babel src --out-dir dist/cjs",
+    "build:umd": "rimraf dist/umd && cross-env BABEL_ENV=es rollup -c & cross-env BABEL_ENV=es NODE_ENV=production rollup -c"
+  },
+  "keywords": [],
+  "author": "Christophe Le Bars (clb@rouge.network)",
+  "license": "ISC",
+  "repository": "clbrge/rouge",
+  "jest": {
+    "transform": {
+      ".js$": "babel-7-jest"
+    }
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.4",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "babel-7-jest": "^21.3.3",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^24.1.0",
+    "babel-plugin-relative-path-import": "^2.0.1",
+    "coveralls": "^2.13.1",
+    "cross-env": "^5.0.5",
+    "eslint": "^5.10.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-babel": "^4.1.2",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "husky": "^0.14.3",
+    "jest": "^24.1.0",
+    "minimist": "^1.2.0",
+    "nodemon": "^1.18.10",
+    "release-it": "^2.8.5",
+    "rimraf": "^2.6.1",
+    "rollup": "^0.39.2",
+    "rollup-plugin-babel": "^3.0.2",
+    "rollup-plugin-bundle-size": "^1.0.2",
+    "rollup-plugin-commonjs": "^8.2.0",
+    "rollup-plugin-ignore": "^1.0.5",
+    "rollup-plugin-json": "^3.1.0",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-uglify": "^2.0.1"
+  },
+  "dependencies": {
+    "ethereumjs-abi": "^0.6.5",
+    "ethereumjs-util": "^6.0.0",
+    "hex64": "^0.4.0",
+    "web3": "1.0.0-beta.51"
+  }
+}

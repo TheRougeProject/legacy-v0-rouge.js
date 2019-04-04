@@ -1,0 +1,36 @@
+{
+  "plugins": [
+    [
+      "babel-plugin-relative-path-import", {
+        "paths": [
+          { "rootPathPrefix": "@", "rootPathSuffix": "." }
+        ]
+      }
+    ]
+  ],
+  "presets": [
+    [
+      "@babel/preset-env", {
+        "targets": {
+          "node": "8.15"
+        }
+      }
+    ]
+  ]
+}
+/*
+{
+  "env": {
+    "test": {
+      "presets": [
+        [ "env", { "targets": { "node": "current" } } ]
+      ]
+    },
+    "cjs": {
+      "presets": ["env"]
+    },
+    "es": {
+      "presets": ["env"]
+    }
+  }
+}*/
