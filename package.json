@@ -1,6 +1,6 @@
 {
   "name": "rouge.js",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Javascript library for interacting with the Rouge protocol",
   "main": "dist/cjs/index.js",
   "browser": "dist/umd/rouge.js",
@@ -16,6 +16,17 @@
   "engines": {
     "node": ">=8.0.0"
   },
+  "keywords": [
+    "rouge.js",
+    "ethereum",
+    "rge",
+    "coupon",
+    "ticket",
+    "voucher"
+  ],
+  "author": "Christophe Le Bars (clb@rouge.network)",
+  "license": "ISC",
+  "repository": "TheRougeProject/rouge.js",
   "scripts": {
     "prepublish": "yarn run build",
     "precommit": "yarn run lint:test",
@@ -35,10 +46,14 @@
     "build:cjs": "rimraf dist/cjs && cross-env BABEL_ENV=cjs babel src --out-dir dist/cjs",
     "build:umd": "rimraf dist/umd && cross-env BABEL_ENV=es rollup -c & cross-env BABEL_ENV=es NODE_ENV=production rollup -c"
   },
-  "keywords": ["rouge.js", "ethereum", "rge", "coupon", "ticket", "voucher"],
-  "author": "Christophe Le Bars (clb@rouge.network)",
-  "license": "ISC",
-  "repository": "TheRougeProject/rouge.js",
+  "release-it": {
+    "github": {
+      "release": true
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "jest": {
     "transform": {
       ".js$": "babel-7-jest"
