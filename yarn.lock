@@ -6368,6 +6368,11 @@ rollup@^0.39.2:
   dependencies:
     source-map-support "^0.4.0"
 
+rouge-protocol-solidity@0.17.0:
+  version "0.17.0"
+  resolved "https://registry.yarnpkg.com/rouge-protocol-solidity/-/rouge-protocol-solidity-0.17.0.tgz#185c1abf7ba6e4dd666db8ac9d6a635b7bde9d7d"
+  integrity sha512-gbnptIgyo8BDHfm04JJ2ALbS0+NsCpiMOVEHuUVDOXq3R0XSq7NAo01Joh8DiQMfK+C8ba32aqWOTtT+0ZMLAw==
+
 rsvp@^3.3.3:
   version "3.6.2"
   resolved "https://registry.yarnpkg.com/rsvp/-/rsvp-3.6.2.tgz#2e96491599a96cde1b515d5674a8f7a91452926a"

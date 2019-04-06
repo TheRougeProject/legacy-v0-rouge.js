@@ -18,14 +18,17 @@
   },
   "keywords": [
     "rouge.js",
-    "ethereum",
     "rge",
+    "ethereum",
     "coupon",
-    "ticket",
-    "voucher"
+    "voucher",
+    "ticket"
   ],
-  "author": "Christophe Le Bars (clb@rouge.network)",
-  "license": "ISC",
+  "authors": [
+    "Christophe Le Bars <clbg@rouge.network>",
+    "Valentin D. Guillois <vdg@rouge.network>"
+  ],
+  "license": "AGPL-3.0-only",
   "repository": "TheRougeProject/rouge.js",
   "scripts": {
     "prepublish": "yarn run build",
@@ -94,6 +97,7 @@
     "rollup-plugin-uglify": "^2.0.1"
   },
   "dependencies": {
+    "rouge-protocol-solidity": "0.17.0",
     "ethereumjs-abi": "^0.6.5",
     "ethereumjs-util": "^6.0.0",
     "hex64": "^0.4.0",

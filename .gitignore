@@ -5,3 +5,4 @@ coverage
 Makefile
 tmp
 .bin
+*.local.*

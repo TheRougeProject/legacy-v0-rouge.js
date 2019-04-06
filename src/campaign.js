@@ -1,7 +1,7 @@
 
 import abi from 'ethereumjs-abi'
 
-import SimpleRougeCampaign from '@/contracts/SimpleRougeCampaign.json'
+import SimpleRougeCampaign from 'rouge-protocol-solidity/build/contracts/SimpleRougeCampaign.json'
 
 import { successfulTransact, universalAccount } from './utils'
 import { authHash } from './authUtils'

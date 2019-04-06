@@ -1,7 +1,11 @@
 
-import RGEToken from '@/contracts/RGETokenInterface.json'
-import RougeFactory from '@/contracts/RougeFactory.json'
-import SimpleRougeCampaign from '@/contracts/SimpleRougeCampaign.json'
+import RGEToken from 'rouge-protocol-solidity/build/contracts/RGETokenInterface.json'
+import RougeFactory from 'rouge-protocol-solidity/build/contracts/RougeFactory.json'
+import SimpleRougeCampaign from 'rouge-protocol-solidity/build/contracts/SimpleRougeCampaign.json'
+
+//  import RGEToken from '@/contracts/RGETokenInterface.json'
+// import RougeFactory from '@/contracts/RougeFactory.json'
+// import SimpleRougeCampaign from '@/contracts/SimpleRougeCampaign.json'
 
 import { RougeProtocolAddress, RougeAuthorization } from './constants'
 import { successfulTransact, universalAccount, delay } from './utils'
