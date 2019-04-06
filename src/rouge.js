@@ -4,7 +4,7 @@ import RougeFactory from '@/contracts/RougeFactory.json'
 import SimpleRougeCampaign from '@/contracts/SimpleRougeCampaign.json'
 
 import { RougeProtocolAddress, RougeAuthorization } from './constants'
-import { successfulTransact } from './utils'
+import { successfulTransact, universalAccount, delay } from './utils'
 
 import abi from 'ethereumjs-abi'
 
@@ -16,11 +16,14 @@ const defaultContext = {
   }
 }
 
+// account is Object with web3 1.x structure :
+// https://web3js.readthedocs.io/en/1.0/web3-eth-accounts.html#
+
 function RougeProtocol (context) {
   context = { ...defaultContext, ...context }
-  context.account = account$(context.account)
+  context.account = universalAccount(context.account)
 
-  const { web3, account, options } = context
+  let { web3, account, options } = context
 
   /* TODO better check valid web3 */
 
@@ -28,25 +31,20 @@ function RougeProtocol (context) {
     throw new Error('beta rouge.js can only be used with web3js 1.0.x')
   }
 
-  function account$ (arg) {
-    if (typeof arg === 'object') return arg
-    if (typeof arg === 'string') return { address: arg }
-    throw new Error('can\'t determine account with value: ' + arg)
+  // const as = address => {
+  //   account = universalAccount(address)
+  // }
+
+  function campaignAt (address) {
+    return Campaign({ ...context, transact$ }, address)
   }
 
   async function balanceOf$ (address) {
     return rgeInstance.methods.balanceOf(address).call()
   }
 
-  async function factoryVersion$ () {
-    return factoryInstance.methods.version().call()
-  }
-
-  function campaignAt (address) {
-    return Campaign({ ...context, account$, transact$ }, address)
-  }
-
-  const delay = t => new Promise(resolve => setTimeout(resolve, t))
+  const factoryVersion$ = () => factoryInstance.methods.version().call()
+  const factoryTare$ = () => factoryInstance.methods.tare().call()
 
   const getTxReceipt$ = hash => new Promise(async resolve => {
     const receipt = await web3.eth.getTransactionReceipt(hash)
@@ -162,7 +160,7 @@ function RougeProtocol (context) {
   const sendFinney = ({fuel, recipient}) => new Promise(async (resolve, reject) => {
     try {
       // TODO if (!account.privateKey) or not signing provider throw new Error('Unlockable account. [createCampaign]')
-      recipient = account$(recipient)
+      recipient = universalAccount(recipient)
       const rawTx = {
         gasPrice: web3.utils.toHex(web3.utils.toWei(options.gasPrice, 'gwei')),
         gasLimit: web3.utils.toHex(21000),
@@ -204,15 +202,18 @@ function RougeProtocol (context) {
         // transact$,
         getTxReceipt$,
         get AUTH () { return RougeAuthorization },
+        get rgeAddress () { return rgeAddress },
         get rge () { return rgeInstance },
         get factoryAddress () { return factoryAddress },
         get factory () { return factoryInstance },
         get factoryVersion () { return factoryVersion$() },
+        get tare () { return factoryTare$() },
         get balance () { return balanceOf$(context.account.address) },
         get account () { return account.address },
-        get context () { return context },
+        get options () { return context.options },
         // rougeQR,
         // getFuelBalance,
+        // as, => user object
         createCampaign,
         getCampaigns,
         sendFinney,

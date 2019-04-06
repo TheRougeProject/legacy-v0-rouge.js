@@ -13,12 +13,21 @@ const rouge = RougeProtocol({ web3 })
 
 describe('RougeProtocol', () => {
 
-  it('account', async () => {
-    // const w3Account = web3.eth.accounts.privateKeyToAccount(issuerPkey)
-    const issuer = (await rouge)
-    // const x2 = (await rouge).as(w3Account)
+  // it('rgeAddress', async () => {
+  //   // const w3Account = web3.eth.accounts.privateKeyToAccount(issuerPkey)
+  //   const issuer = (await rouge)
+  //   // const x2 = (await rouge).as(w3Account)
+  // })
+
+  it('rgeAddress', async () => {
+    // const issuer = (await rouge)
     expect.assertions(1)
-    expect(issuer.rgeAddress).toBe('0x277FB7D416B6316E17954823aa621F3E321c8a72')
+    return expect((await rouge).rgeAddress).toBe('0x5475300766433dd082a7340fc48a445c483df68f')
+  })
+
+  it('tare', async () => {
+    expect.assertions(1)
+    return expect(await (await rouge).tare).toEqual({_hex: '0x0186a0'})
   })
 
 })

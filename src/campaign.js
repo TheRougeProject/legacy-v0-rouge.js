@@ -3,14 +3,11 @@ import abi from 'ethereumjs-abi'
 
 import SimpleRougeCampaign from '@/contracts/SimpleRougeCampaign.json'
 
-import { successfulTransact } from './utils'
+import { successfulTransact, universalAccount } from './utils'
 import { authHash } from './authUtils'
 import { RougeAuthorization } from './constants'
 
-// account is Object with web3 1.x structure :
-// https://web3js.readthedocs.io/en/1.0/web3-eth-accounts.html#
-
-export default function Campaign ({ web3, account, transact$, account$ }, address) {
+export default function Campaign ({ web3, account, transact$ }, address) {
   const instance = new web3.eth.Contract(SimpleRougeCampaign.abi, address, {})
 
   const version$ = async () => instance.methods.version().call()
@@ -58,7 +55,7 @@ export default function Campaign ({ web3, account, transact$, account$ }, addres
 
   const addAttestor = async ({attestor, auths}) => new Promise(async (resolve, reject) => {
     try {
-      attestor = account$(attestor)
+      attestor = universalAccount(attestor)
       // XXX check syntax attestor + auths
       const method = instance.methods.addAttestor(attestor.address, auths)
       // ! BUG in web3 1.0 (instance.abiModel.abi.methods.addAttestor) doesn't include Array
