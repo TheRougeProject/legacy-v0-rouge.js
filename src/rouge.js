@@ -3,10 +3,6 @@ import RGEToken from 'rouge-protocol-solidity/build/contracts/RGETokenInterface.
 import RougeFactory from 'rouge-protocol-solidity/build/contracts/RougeFactory.json'
 import SimpleRougeCampaign from 'rouge-protocol-solidity/build/contracts/SimpleRougeCampaign.json'
 
-//  import RGEToken from '@/contracts/RGETokenInterface.json'
-// import RougeFactory from '@/contracts/RougeFactory.json'
-// import SimpleRougeCampaign from '@/contracts/SimpleRougeCampaign.json'
-
 import { RougeProtocolAddress, RougeAuthorization } from './constants'
 import { successfulTransact, universalAccount, delay } from './utils'
 
@@ -73,13 +69,24 @@ function RougeProtocol (context) {
           value: '0x00',
           data: encoded
         }
+        // send is returning PromiEvent // use callback -- most stable solution atm
+        /* Event not yet working beta46 to beta51
+           .on(
+           'receipt', function (receipt) {
+           resolve(receipt)
+           }) */
         if (account.privateKey) {
-          // const signed = account.signTransaction(rawTx) // XXX doesn't work with beta46
-          const signed = await web3.eth.accounts.signTransaction(rawTx, account.privateKey)
-          const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction)
-          resolve(receipt)
+          const signed = await account.signTransaction(rawTx) // beta51 ok
+          // fallback beta46
+          // const signed2 = await web3.eth.accounts.signTransaction(rawTx, account.privateKey)
+          web3.eth.sendSignedTransaction(signed.rawTransaction, async (error, hash) => {
+            if (error) {
+              throw new Error('transact failed.')
+            } else {
+              resolve(await getTxReceipt$(hash))
+            }
+          })
         } else {
-          // Promise not yet working beta46 to beta51
           web3.eth.sendTransaction({ from: account.address, ...rawTx }, async (error, hash) => {
             if (error) {
               throw new Error('transact failed.')
@@ -87,11 +94,6 @@ function RougeProtocol (context) {
               resolve(await getTxReceipt$(hash))
             }
           })
-          /* Event not yet working beta46 to beta51
-             .on(
-             'receipt', function (receipt) {
-             resolve(receipt)
-             }) */
         }
       } catch (e) {
         reject(e)

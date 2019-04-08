@@ -17,7 +17,6 @@
 import rouge from 'rouge.js'
 
 ```
-<!--
 ### Installation
 
 Install via [yarn](https://github.com/yarnpkg/yarn)
@@ -27,6 +26,8 @@ Install via [yarn](https://github.com/yarnpkg/yarn)
 or npm
 
 	npm install rouge (--save-dev)
+
+<!--
 
 ### configuration
 
@@ -59,10 +60,21 @@ If you don't use a package manager, you can [access `rouge` via unpkg (CDN)](htt
 The `rouge` package includes precompiled production and development [UMD](https://github.com/umdjs/umd) builds in the [`dist/umd` folder](https://unpkg.com/rouge/dist/umd/). They can be used directly without a bundler and are thus compatible with many popular JavaScript module loaders and environments. You can drop a UMD build as a [`<script>` tag](https://unpkg.com/rouge) on your page. The UMD builds make `rouge` available as a `window.rouge` global variable.
 -->
 
-### License
-
-The code is available under the [ISC](LICENSE) license.
-
 ### Contributing
 
 We are open to contributions, see [CONTRIBUTING.md](CONTRIBUTING.md) for more info.
+
+### Licensed under GNU AFFERO GENERAL PUBLIC LICENSE v3
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
