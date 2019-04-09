@@ -56,19 +56,9 @@ function RougeProtocol (context) {
     }
   })
 
-  function transact$ (method, to, estimate, encoded) {
+  function sendTransaction$ (rawTx) {
     return new Promise(async (resolve, reject) => {
       try {
-        // workaround incorrect ABI encoding...
-        if (!estimate) estimate = await method.estimateGas({ from: account.address })
-        if (!encoded) encoded = await method.encodeABI()
-        var rawTx = {
-          gasPrice: web3.utils.toHex(web3.utils.toWei(options.gasPrice, 'gwei')),
-          gasLimit: web3.utils.toHex(estimate),
-          to: to,
-          value: '0x00',
-          data: encoded
-        }
         // send is returning PromiEvent // use callback -- most stable solution atm
         /* Event not yet working beta46 to beta51
            .on(
@@ -95,6 +85,42 @@ function RougeProtocol (context) {
             }
           })
         }
+      } catch (e) {
+        reject(e)
+      }
+    })
+  }
+
+  const sendFinney = ({fuel, recipient}) => new Promise(async (resolve, reject) => {
+    try {
+      recipient = universalAccount(recipient)
+      const rawTx = {
+        gasPrice: web3.utils.toHex(web3.utils.toWei(options.gasPrice, 'gwei')),
+        gasLimit: web3.utils.toHex(21000),
+        to: recipient.address,
+        value: web3.utils.toHex(web3.utils.toWei(fuel, 'finney'))
+      }
+      return resolve(await sendTransaction$(rawTx))
+    } catch (e) {
+      reject(e)
+      // throw new Error('error sending sendFinney. [sendFinney]')
+    }
+  })
+
+  function transact$ (method, to, estimate, encoded) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        // workaround incorrect ABI encoding...
+        if (!estimate) estimate = await method.estimateGas({ from: account.address })
+        if (!encoded) encoded = await method.encodeABI()
+        var rawTx = {
+          gasPrice: web3.utils.toHex(web3.utils.toWei(options.gasPrice, 'gwei')),
+          gasLimit: web3.utils.toHex(estimate),
+          to: to,
+          value: '0x00',
+          data: encoded
+        }
+        return resolve(await sendTransaction$(rawTx))
       } catch (e) {
         reject(e)
       }
@@ -158,25 +184,6 @@ function RougeProtocol (context) {
         topics: ['0x61d7bd1b44357bca3ed4bd238fec71f1710af7c589ab829be7f3be96caa6c5eb']
       })
       resolve(logs.map(log => log.address))
-    } catch (e) {
-      reject(e)
-    }
-  })
-
-  const sendFinney = ({fuel, recipient}) => new Promise(async (resolve, reject) => {
-    try {
-      // TODO if (!account.privateKey) or not signing provider throw new Error('Unlockable account. [createCampaign]')
-      recipient = universalAccount(recipient)
-      const rawTx = {
-        gasPrice: web3.utils.toHex(web3.utils.toWei(options.gasPrice, 'gwei')),
-        gasLimit: web3.utils.toHex(21000),
-        to: recipient.address,
-        value: web3.utils.toHex(web3.utils.toWei(fuel, 'finney'))
-      }
-      const signed = await web3.eth.accounts.signTransaction(rawTx, account.privateKey)
-      const receipt = await web3.eth.sendSignedTransaction(signed.rawTransaction)
-      if (!successfulTransact(receipt)) throw new Error('error sending sendFinney. [sendFinney]')
-      resolve(true)
     } catch (e) {
       reject(e)
     }
