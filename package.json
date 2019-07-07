@@ -72,7 +72,7 @@
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.1.0",
     "babel-plugin-relative-path-import": "^2.0.1",
-    "coveralls": "^2.13.1",
+    "coveralls": "^3.0.4",
     "cross-env": "^5.0.5",
     "eslint": "^5.10.0",
     "eslint-config-standard": "^12.0.0",
@@ -85,7 +85,7 @@
     "jest": "^24.1.0",
     "minimist": "^1.2.0",
     "nodemon": "^1.18.10",
-    "release-it": "^2.8.5",
+    "release-it": "^12.3.2",
     "rimraf": "^2.6.1",
     "rollup": "^0.39.2",
     "rollup-plugin-babel": "^3.0.2",
@@ -97,10 +97,10 @@
     "rollup-plugin-uglify": "^2.0.1"
   },
   "dependencies": {
-    "rouge-protocol-solidity": "0.17.0",
-    "ethereumjs-abi": "^0.6.5",
-    "ethereumjs-util": "^6.0.0",
+    "ethereumjs-abi": "^0.6.7",
+    "ethereumjs-util": "^6.1.0",
     "hex64": "^0.4.0",
-    "web3": "1.0.0-beta.51"
+    "rouge-protocol-solidity": "0.17.0",
+    "web3": "1.0.0-beta.55"
   }
 }
