@@ -1,49 +1,52 @@
 # rouge.js
 
-<!--
-![Node](https://img.shields.io/node/v/rouge.svg?style=flat-square)
-[![NPM](https://img.shields.io/npm/v/rouge.svg?style=flat-square)](https://www.npmjs.com/package/rouge)
-[![Travis](https://img.shields.io/travis/TheRougeProject/rouge.js/master.svg?style=flat-square)](https://travis-ci.org/TheRougeProject/rouge.js)
+![Node](https://img.shields.io/node/v/rouge.js.svg?style=flat-square)
+[![NPM](https://img.shields.io/npm/v/rouge.js.svg?style=flat-square)](https://www.npmjs.com/package/rouge.js)
 [![David](https://img.shields.io/david/TheRougeProject/rouge.js.svg?style=flat-square)](https://david-dm.org/TheRougeProject/rouge.js)
+
+<!--
+[![NPM](https://img.shields.io/npm/dt/rouge.js.svg?style=flat-square)](https://www.npmjs.com/package/rouge)
+
+[![Travis](https://img.shields.io/travis/TheRougeProject/rouge.js/master.svg?style=flat-square)](https://travis-ci.org/TheRougeProject/rouge.js)
+
 [![Coverage Status](https://img.shields.io/coveralls/TheRougeProject/rouge.js.svg?style=flat-square)](https://coveralls.io/github/TheRougeProject/rouge.js)
-[![NPM](https://img.shields.io/npm/dt/rouge.svg?style=flat-square)](https://www.npmjs.com/package/rouge)
 -->
 
 > Javascript library for interacting with the Rouge protocol
 
-### Usage
+The Rouge protocol is an open-source blockchain voucher and note
+protocol built as a suite of smart contracts using a specific token —
+the Rouge token — on Ethereum compatible blockchains (tested on
+Ethereum and POA).
 
-```js
-import rouge from 'rouge.js'
+Rouge is for all types of usage of non-repudiable and unique usage
+digital vouchers (for example, e-tickets, e-coupons, cashback notes,
+etc).
 
-```
+Using the javascript rouge.js package you can easily add
+non-repudiable and unique usage digital vouchers without learning
+Solidity in the browser (ÐApps), a nodejs backend app or even a
+nativescript mobile app.
+
 ### Installation
 
 Install via [yarn](https://github.com/yarnpkg/yarn)
 
-	yarn add rouge (--dev)
+	yarn add rouge
 
 or npm
 
-	npm install rouge (--save-dev)
+	npm i rouge
 
-<!--
-
-### configuration
-
-You can pass in extra options as a configuration object (➕ required, ➖ optional, ✏️ default).
+### Usage
 
 ```js
-import rouge from 'rouge'
+import { RougeProtocol } from 'rouge.js'
 
 ```
 
-➖ **property** ( type ) ` ✏️ default `
-<br/> 📝 description
-<br/> ❗️ warning
-<br/> ℹ️ info
-<br/> 💡 example
--->
+[Online documentation](https://rouge.network/).
+
 
 <!--
 ### Examples
