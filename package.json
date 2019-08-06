@@ -32,8 +32,6 @@
   "repository": "TheRougeProject/rouge.js",
   "scripts": {
     "prepublish": "yarn run build",
-    "precommit": "yarn run lint:test",
-    "prepush": "yarn run lint:test",
     "release": "release-it",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
     "cli": "NODE_ENV=test nodemon --exec babel-node src/cli.js",
@@ -103,5 +101,11 @@
     "hex64": "^0.4.0",
     "rouge-protocol-solidity": "0.17.0",
     "web3": "^1.2.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn run lint:test",
+      "pre-push": "yarn run lint:test"
+    }
   }
 }
