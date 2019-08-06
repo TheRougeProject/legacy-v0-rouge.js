@@ -7,7 +7,7 @@ const hex64 = require('hex64')
 export function authHash (msg, campaign, bearer) {
   // return '0x' + abi.soliditySHA3(
   return '0x' + ethUtils.keccak(abi.solidityPack(
-    [ 'string', 'address', 'address' ], [ msg, new BN(campaign, 16), new BN(bearer, 16) ]
+    ['string', 'address', 'address'], [msg, new BN(campaign, 16), new BN(bearer, 16)]
   )).toString('hex')
 }
 

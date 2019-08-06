@@ -14,5 +14,6 @@ module.exports = {
     "no-warning-comments": [0, { "location": "anywhere" }],
     'arrow-parens': ["error", "as-needed"],
     'no-empty': ["error", { "allowEmptyCatch": true }],
+    'no-async-promise-executor' : 'off'
   }
 }

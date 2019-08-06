@@ -1,8 +1,29 @@
 
 export const delay = t => new Promise(resolve => setTimeout(resolve, t))
 
-export const universalAccount = arg => {
-  if (typeof arg === 'object') return arg
+export const universalAccount = (web3, arg) => {
+  if (typeof arg === 'object') {
+    // TODO regexp pkey)
+    if (arg.pkey) {
+      return web3.eth.accounts.privateKeyToAccount(arg.pkey)
+    } else {
+      return arg
+    }
+  }
+  if (typeof arg === 'string') return { address: arg }
+  // throw new Error('can\'t determine account with value: ' + arg)
+  return {}
+}
+
+export const universalScheme = (web3, arg) => {
+  if (typeof arg === 'object') {
+    // TODO regexp pkey)
+    if (arg.pkey) {
+      return web3.eth.accounts.privateKeyToAccount(arg.pkey)
+    } else {
+      return arg
+    }
+  }
   if (typeof arg === 'string') return { address: arg }
   // throw new Error('can\'t determine account with value: ' + arg)
   return {}

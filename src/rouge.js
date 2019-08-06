@@ -4,7 +4,7 @@ import RougeFactory from 'rouge-protocol-solidity/build/contracts/RougeFactory.j
 import SimpleRougeCampaign from 'rouge-protocol-solidity/build/contracts/SimpleRougeCampaign.json'
 
 import { RougeProtocolAddress, RougeAuthorization } from './constants'
-import { successfulTransact, universalAccount, delay } from './utils'
+import { successfulTransact, universalAccount, universalScheme, delay } from './utils'
 
 import abi from 'ethereumjs-abi'
 
@@ -13,38 +13,75 @@ import Campaign from './campaign'
 const defaultContext = {
   options: {
     gasPrice: '1'
-  }
+  },
+  // TODO automatic scheme management
+  scheme: '0x0001ffff'
 }
 
 // account is Object with web3 1.x structure :
 // https://web3js.readthedocs.io/en/1.0/web3-eth-accounts.html#
 
-function RougeProtocol (context) {
+function RougeProtocol (web3, context = {}) {
   context = { ...defaultContext, ...context }
-  context.account = universalAccount(context.account)
-
-  let { web3, account, options } = context
 
   /* TODO better check valid web3 */
-
-  if (!/^1.0.0/.test(web3.version)) {
-    throw new Error('beta rouge.js can only be used with web3js 1.0.x')
+  if (!/^1./.test(web3.version)) {
+    throw new Error('beta rouge.js can only be used with web3js 1.x')
   }
 
-  // const as = address => {
-  //   account = universalAccount(address)
-  // }
+  const RGE$address = async () => RougeProtocolAddress[await web3.eth.net.getId()].rge
+  const RGE$web3instance = async () => new web3.eth.Contract(RGEToken.abi, await RGE$address(), {})
+  const RGE$balanceOf = async address => (await RGE$web3instance()).methods.balanceOf(address).call()
 
-  function campaignAt (address) {
-    return Campaign({ ...context, transact$ }, address)
+  // end with $ = non Promise object
+  const RGE$ = Object.freeze({
+    get address () { return RGE$address() },
+    get web3instance () { return RGE$web3instance() },
+    balanceOf: RGE$balanceOf
+  })
+
+  const factory$address = async () => (await RGE$web3instance()).methods.factory().call()
+  const factory$web3instance = async () => new web3.eth.Contract(RougeFactory.abi, await factory$address())
+  const factory$rgeAddress = async () => (await factory$web3instance()).methods.rge().call()
+  const factory$version = async () => (await factory$web3instance()).methods.version().call()
+  const factory$tare = async () => (await factory$web3instance()).methods.tare().call()
+
+  const factory$ = Object.freeze({
+    get address () { return factory$address() },
+    get web3instance () { return factory$web3instance() },
+    get version () { return factory$version() },
+    get tare () { return factory$tare() }
+    // get balance () { return balanceOf$(context.account.address) }
+    // get RGEbalance () { return factory$RGEbalance() },
+  })
+
+  const control = async () => {
+    if ((await RGE$address()).toLowerCase() !== (await factory$rgeAddress()).toLowerCase()) {
+      throw new Error('RGE protocol not ready: rge address not set in factory')
+    }
+    // TODO check event SetFactory(address indexed _rge, uint256 _tare) => store first block active factory
   }
 
-  async function balanceOf$ (address) {
-    return rgeInstance.methods.balanceOf(address).call()
-  }
+  control()
 
-  const factoryVersion$ = () => factoryInstance.methods.version().call()
-  const factoryTare$ = () => factoryInstance.methods.tare().call()
+  const _AbiEvents = {}
+  RougeFactory.abi.reduce((acc, d) => {
+    if (d.type === 'event') acc[d.name] = d
+    return acc
+  }, _AbiEvents)
+  SimpleRougeCampaign.abi.reduce((acc, d) => {
+    if (d.type === 'event') acc[d.name] = d
+    return acc
+  }, _AbiEvents)
+
+  const _decodeLog = (name, log) => web3.eth.abi.decodeLog(_AbiEvents[name].inputs, log.data, log.topics.slice(1))
+
+  const account$ = () => Object.freeze({
+    get address () { return context.as.address }
+    // get RGE$balanceOf () { return balanceOf$(context.account.address) }
+  })
+
+  const campaign$ = address => Campaign(web3, address, { ...context, _transact, _decodeLog })
 
   const getTxReceipt$ = hash => new Promise(async resolve => {
     const receipt = await web3.eth.getTransactionReceipt(hash)
@@ -56,7 +93,8 @@ function RougeProtocol (context) {
     }
   })
 
-  function sendTransaction$ (rawTx) {
+  // starting with _ = internal fct
+  function _sendTransaction (rawTx) {
     return new Promise(async (resolve, reject) => {
       try {
         // send is returning PromiEvent // use callback -- most stable solution atm
@@ -65,10 +103,10 @@ function RougeProtocol (context) {
            'receipt', function (receipt) {
            resolve(receipt)
            }) */
-        if (account.privateKey) {
-          const signed = await account.signTransaction(rawTx) // beta51 ok
+        if (context.as.privateKey) {
+          const signed = await context.as.signTransaction(rawTx) // web3.0 > beta51 ok
           // fallback beta46
-          // const signed2 = await web3.eth.accounts.signTransaction(rawTx, account.privateKey)
+          // const signed2 = await web3.eth.accounts.signTransaction(rawTx, context.as.privateKey)
           web3.eth.sendSignedTransaction(signed.rawTransaction, async (error, hash) => {
             if (error) {
               throw new Error('transact failed.')
@@ -77,7 +115,7 @@ function RougeProtocol (context) {
             }
           })
         } else {
-          web3.eth.sendTransaction({ from: account.address, ...rawTx }, async (error, hash) => {
+          web3.eth.sendTransaction({ from: context.as.address, ...rawTx }, async (error, hash) => {
             if (error) {
               throw new Error('transact failed.')
             } else {
@@ -91,56 +129,57 @@ function RougeProtocol (context) {
     })
   }
 
-  const sendFinney = ({fuel, recipient}) => new Promise(async (resolve, reject) => {
-    try {
-      recipient = universalAccount(recipient)
-      const rawTx = {
-        gasPrice: web3.utils.toHex(web3.utils.toWei(options.gasPrice, 'gwei')),
-        gasLimit: web3.utils.toHex(21000),
-        to: recipient.address,
-        value: web3.utils.toHex(web3.utils.toWei(fuel, 'finney'))
-      }
-      return resolve(await sendTransaction$(rawTx))
-    } catch (e) {
-      reject(e)
-      // throw new Error('error sending sendFinney. [sendFinney]')
-    }
-  })
-
-  function transact$ (method, to, estimate, encoded) {
+  function _transact (method, to, estimate, encoded) {
     return new Promise(async (resolve, reject) => {
       try {
+        if (!estimate) estimate = await method.estimateGas({ from: context.as.address })
         // workaround incorrect ABI encoding...
-        if (!estimate) estimate = await method.estimateGas({ from: account.address })
         if (!encoded) encoded = await method.encodeABI()
-        var rawTx = {
-          gasPrice: web3.utils.toHex(web3.utils.toWei(options.gasPrice, 'gwei')),
+        const rawTx = {
+          gasPrice: web3.utils.toHex(web3.utils.toWei(context.options.gasPrice, 'gwei')),
           gasLimit: web3.utils.toHex(estimate),
           to: to,
           value: '0x00',
           data: encoded
         }
-        return resolve(await sendTransaction$(rawTx))
+        return resolve(await _sendTransaction(rawTx))
       } catch (e) {
+        console.log(e)
         reject(e)
       }
     })
   }
 
-  const createCampaign = (
-    {issuance, scheme, tokens, name, expiration, attestor, auths}
-  ) => new Promise(async (resolve, reject) => {
+  const createCampaign = ({
+    name = '',
+    issuance = 1,
+    scheme = context.scheme,
+    tokens,
+    // two weeks
+    expiration = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 14,
+    attestor,
+    auths
+  }) => new Promise(async (resolve, reject) => { // eslint-line-disable no-async-promise-executor
     try {
-      // TODO if (!account.privateKey) or not signing provider throw new Error('Unlockable account. [createCampaign]')
-
-      // check if enough token...
+      if (!tokens) {
+        const tare = web3.utils.toBN(await factory$tare())
+        tokens = web3.utils.toBN(issuance).mul(tare)
+      }
+      // always check if enough token ? only if check options
+      // check enought RGE
       // check expiration
+      const method = (await RGE$web3instance()).methods.newCampaign(issuance, tokens.toString())
 
-      const rgeAddress = RougeProtocolAddress[await web3.eth.net.getId()].rge
-      const rgeContract = new web3.eth.Contract(RGEToken.abi, rgeAddress)
-      const method = rgeContract.methods.newCampaign(issuance, tokens)
+      const receipt = await _transact(method, await RGE$address())
+      // console.log('XXX receipt', receipt)
 
-      const receipt = await transact$(method, rgeAddress)
+      // Log[0] transfer RGE to factory
+      // Log[1] SimpleRougeCampaign : attestorAddition(issuer, Authorization.All);
+      // Log[2] transfer RGE to Campaign
+      // Log[3] RougeFactory : NewCampaign(_issuer, c, _issuance);
+
+      const NewCampaign = _decodeLog('NewCampaign', receipt.logs[3])
+      // console.log("NewCampaign", NewCampaign,receipt.logs[3])
 
       if (!successfulTransact(receipt)) throw new Error('can\'t instanciate new campaign. [createCampaign]')
 
@@ -159,17 +198,22 @@ function RougeProtocol (context) {
         method2 = campaignContract.methods.issue(scheme, name, expiration)
       }
 
-      const receipt2 = await transact$(method2, campaignAddress, null, encoded)
+      const receipt2 = await _transact(method2, campaignAddress, null, encoded)
 
       if (!successfulTransact(receipt2)) throw new Error('can\'t issue campaign. [createCampaign]')
+      // console.log('XXX2 receipt', receipt2)
 
-      resolve(campaignAt(campaignAddress))
+      // const Issuance = _decodeLog('Issuance', receipt2.logs[0])
+      // console.log("Issuance", Issuance)
+
+      resolve(campaign$(NewCampaign.campaign))
     } catch (e) {
       reject(e)
     }
+
   })
 
-  const getCampaigns = ({scheme, issuer}) => new Promise(async (resolve, reject) => {
+  const getCampaignList = ({scheme, issuer}) => new Promise(async (resolve, reject) => {
     try {
       // const logs = await web3.eth.getPastLogs({
       //   address: factoryAddress,
@@ -189,51 +233,53 @@ function RougeProtocol (context) {
     }
   })
 
-  let rgeAddress = null
-  let rgeInstance = null
-  let factoryAddress = null
-  let factoryInstance = null
-
-  return new Promise(async (resolve, reject) => {
-    rgeAddress = RougeProtocolAddress[await web3.eth.net.getId()].rge
-    rgeInstance = new web3.eth.Contract(RGEToken.abi, rgeAddress, {})
-
-    // Default factory != factory (as param)
-    // TODO lazy factory loading...
-    // check event SetFactory(address indexed _rge, uint256 _tare) => store first block active factory
-
-    factoryAddress = await rgeInstance.methods.factory().call()
-    factoryInstance = new web3.eth.Contract(RougeFactory.abi, factoryAddress)
-
-    const rgeInFactory = await factoryInstance.methods.rge().call()
-    if (rgeAddress.toLowerCase() !== rgeInFactory.toLowerCase()) {
-      throw new Error('RGE protocol not ready: rge address not set in factory')
+  const sendFinney = ({fuel, recipient}) => new Promise(async (resolve, reject) => {
+    try {
+      recipient = universalAccount(web3, recipient)
+      const rawTx = {
+        gasPrice: web3.utils.toHex(web3.utils.toWei(context.options.gasPrice, 'gwei')),
+        gasLimit: web3.utils.toHex(21000),
+        to: recipient.address,
+        value: web3.utils.toHex(web3.utils.toWei(fuel, 'finney'))
+      }
+      return resolve(await _sendTransaction(rawTx))
+    } catch (e) {
+      reject(e)
+      // throw new Error('error sending sendFinney. [sendFinney]')
     }
-
-    resolve(
-      Object.freeze({
-        // transact$,
-        getTxReceipt$,
-        get AUTH () { return RougeAuthorization },
-        get rgeAddress () { return rgeAddress },
-        get rge () { return rgeInstance },
-        get factoryAddress () { return factoryAddress },
-        get factory () { return factoryInstance },
-        get factoryVersion () { return factoryVersion$() },
-        get tare () { return factoryTare$() },
-        get balance () { return balanceOf$(context.account.address) },
-        get account () { return account.address },
-        get options () { return context.options },
-        // rougeQR,
-        // getFuelBalance,
-        // as, => user object
-        createCampaign,
-        getCampaigns,
-        sendFinney,
-        campaignAt
-      })
-    )
   })
+
+  const $ = {
+    // get options$$ () { return context.options },
+    // set alteernative (account) { context.as = universalAccount(web3, account) },
+    // getTxReceipt$,
+    // protocol object with properties (non Promise & end with $) // no blockchain mutation & no pipe
+    get AUTH$ () { return RougeAuthorization },
+    get RGE$ () { return RGE$ },
+    get factory$ () { return factory$ },
+    get account$ () { return account$() },
+    campaign$,
+    // verb => potentially mutation, always return Promise, pipe always end
+    createCampaign,
+    getCampaignList,
+    // return Promise true/false or PromiEvent ?
+    sendFinney
+  }
+
+  // noun => change object context, no Promise
+
+  $.scheme = code => {
+    // use description or hex
+    context.scheme = universalScheme(code)
+    return Object.freeze($)
+  }
+
+  $.as = account => {
+    context.as = universalAccount(web3, account)
+    return Object.freeze($)
+  }
+
+  return $.as(context.as)
 }
 
 export default RougeProtocol
