@@ -6,7 +6,7 @@ import SimpleRougeCampaign from 'rouge-protocol-solidity/build/contracts/SimpleR
 import { RougeProtocolAddress, RougeAuthorization } from './constants'
 import { successfulTransact, universalAccount, universalScheme, delay } from './utils'
 
-import abi from 'ethereumjs-abi'
+// import abi from 'ethereumjs-abi'
 
 import Campaign from './campaign'
 
@@ -81,7 +81,7 @@ function RougeProtocol (web3, context = {}) {
     // get RGE$balanceOf () { return balanceOf$(context.account.address) }
   })
 
-  const campaign$ = address => Campaign(web3, address, { ...context, _transact, _decodeLog })
+  const campaign$ = address => Campaign(web3, address, { context, _transact, _decodeLog })
 
   const getTxReceipt$ = hash => new Promise(async resolve => {
     const receipt = await web3.eth.getTransactionReceipt(hash)
@@ -151,14 +151,10 @@ function RougeProtocol (web3, context = {}) {
   }
 
   const createCampaign = ({
-    name = '',
     issuance = 1,
-    scheme = context.scheme,
     tokens,
-    // two weeks
-    expiration = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 14,
-    attestor,
-    auths
+    scheme = context.scheme,
+    ...args
   }) => new Promise(async (resolve, reject) => { // eslint-line-disable no-async-promise-executor
     try {
       if (!tokens) {
@@ -167,11 +163,8 @@ function RougeProtocol (web3, context = {}) {
       }
       // always check if enough token ? only if check options
       // check enought RGE
-      // check expiration
       const method = (await RGE$web3instance()).methods.newCampaign(issuance, tokens.toString())
-
       const receipt = await _transact(method, await RGE$address())
-      // console.log('XXX receipt', receipt)
 
       // Log[0] transfer RGE to factory
       // Log[1] SimpleRougeCampaign : attestorAddition(issuer, Authorization.All);
@@ -179,38 +172,15 @@ function RougeProtocol (web3, context = {}) {
       // Log[3] RougeFactory : NewCampaign(_issuer, c, _issuance);
 
       const NewCampaign = _decodeLog('NewCampaign', receipt.logs[3])
-      // console.log("NewCampaign", NewCampaign,receipt.logs[3])
+      // console.log('NewCampaign', NewCampaign)
 
-      if (!successfulTransact(receipt)) throw new Error('can\'t instanciate new campaign. [createCampaign]')
+      if (!successfulTransact(receipt)) throw new Error('can\'t instanciate new campaign.')
 
-      const campaignAddress = '0x' + receipt.logs[3].topics[2].slice(26, 66) // TODO use decodeLog?
-      const campaignContract = new web3.eth.Contract(SimpleRougeCampaign.abi, campaignAddress)
-
-      let method2 // move to Campaign module
-      let encoded
-      // TODO check attestor & grant syntax/rules
-      if (attestor && auths) {
-        encoded = '0x' + abi.simpleEncode(
-          'issueWithAttestor(bytes4,string,uint,address,uint8[])', scheme, name, expiration, attestor, auths
-        ).toString('hex')
-        method2 = campaignContract.methods.issueWithAttestor(scheme, name, expiration, attestor, auths)
-      } else {
-        method2 = campaignContract.methods.issue(scheme, name, expiration)
-      }
-
-      const receipt2 = await _transact(method2, campaignAddress, null, encoded)
-
-      if (!successfulTransact(receipt2)) throw new Error('can\'t issue campaign. [createCampaign]')
-      // console.log('XXX2 receipt', receipt2)
-
-      // const Issuance = _decodeLog('Issuance', receipt2.logs[0])
-      // console.log("Issuance", Issuance)
-
-      resolve(campaign$(NewCampaign.campaign))
+      const campaign = campaign$(NewCampaign.campaign)
+      resolve(campaign.issue({ ...args }))
     } catch (e) {
       reject(e)
     }
-
   })
 
   const getCampaignList = ({scheme, issuer}) => new Promise(async (resolve, reject) => {

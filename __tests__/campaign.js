@@ -26,10 +26,11 @@ describe('campaign.version()', () => {
   )
 })
 
-describe('campaign.name()', () => {
+describe('campaign.tare()', () => {
+  const expected = '100000'
   test(
-    `return 'JEST TEST campaign'`,
-    async () => expect(await campaign.name).toEqual('JEST TEST campaign')
+    `return ${JSON.stringify(expected)}`,
+    async () => expect(await campaign.tare).toEqual(expected)
   )
 })
 
@@ -41,11 +42,42 @@ describe('campaign.info()', () => {
   )
 })
 
+describe('campaign.issuer()', () => {
+  const expected = issuerAccount.address
+  test(
+    `return ${JSON.stringify(expected)}`,
+    async () => expect(await campaign.issuer).toEqual(expected)
+  )
+})
+
+describe('campaign.scheme()', () => {
+  const expected = '0x0001ffff'
+  test(
+    `return ${JSON.stringify(expected)}`,
+    async () => expect(await campaign.scheme).toEqual(expected)
+  )
+})
+
 describe('campaign.expiration()', () => {
   const expected = '1563345797'
   test(
     `return ${JSON.stringify(expected)}`,
     async () => expect(await campaign.expiration).toEqual(expected)
+  )
+})
+
+describe('campaign.name()', () => {
+  test(
+    `return 'JEST TEST campaign'`,
+    async () => expect(await campaign.name).toEqual('JEST TEST campaign')
+  )
+})
+
+describe('campaign.state()', () => {
+  const expected = '0x0000000101000000010000000000000000'
+  test(
+    `return ${expected}`,
+    async () => expect(await campaign.state).toEqual(expected)
   )
 })
 
@@ -57,11 +89,11 @@ describe('campaign.issuance()', () => {
   )
 })
 
-describe('campaign.state()', () => {
-  const expected = '0x0000000101000000010000000000000000'
+describe('campaign.isIssued()', () => {
+  const expected = true
   test(
     `return ${expected}`,
-    async () => expect(await campaign.state).toEqual(expected)
+    async () => expect(await campaign.isIssued).toEqual(expected)
   )
 })
 
