@@ -4,9 +4,7 @@ import RougeFactory from 'rouge-protocol-solidity/build/contracts/RougeFactory.j
 import SimpleRougeCampaign from 'rouge-protocol-solidity/build/contracts/SimpleRougeCampaign.json'
 
 import { RougeProtocolAddress, RougeAuthorization } from './constants'
-import { successfulTransact, universalAccount, universalScheme, delay } from './utils'
-
-// import abi from 'ethereumjs-abi'
+import { universalAccount, universalScheme, sendTransaction, transact, successfulTransact } from './utils'
 
 import Campaign from './campaign'
 
@@ -28,6 +26,8 @@ function RougeProtocol (web3, context = {}) {
   if (!/^1./.test(web3.version)) {
     throw new Error('beta rouge.js can only be used with web3js 1.x')
   }
+
+  const _transact = (...args) => transact(web3, context, ...args)
 
   const RGE$address = async () => RougeProtocolAddress[await web3.eth.net.getId()].rge
   const RGE$web3instance = async () => new web3.eth.Contract(RGEToken.abi, await RGE$address(), {})
@@ -81,74 +81,7 @@ function RougeProtocol (web3, context = {}) {
     // get RGE$balanceOf () { return balanceOf$(context.account.address) }
   })
 
-  const campaign$ = address => Campaign(web3, address, { context, _transact, _decodeLog })
-
-  const getTxReceipt$ = hash => new Promise(async resolve => {
-    const receipt = await web3.eth.getTransactionReceipt(hash)
-    if (receipt) {
-      resolve(receipt)
-    } else {
-      await delay(2000)
-      resolve(await getTxReceipt$(hash))
-    }
-  })
-
-  // starting with _ = internal fct
-  function _sendTransaction (rawTx) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        // send is returning PromiEvent // use callback -- most stable solution atm
-        /* Event not yet working beta46 to beta51
-           .on(
-           'receipt', function (receipt) {
-           resolve(receipt)
-           }) */
-        if (context.as.privateKey) {
-          const signed = await context.as.signTransaction(rawTx) // web3.0 > beta51 ok
-          // fallback beta46
-          // const signed2 = await web3.eth.accounts.signTransaction(rawTx, context.as.privateKey)
-          web3.eth.sendSignedTransaction(signed.rawTransaction, async (error, hash) => {
-            if (error) {
-              throw new Error('transact failed.')
-            } else {
-              resolve(await getTxReceipt$(hash))
-            }
-          })
-        } else {
-          web3.eth.sendTransaction({ from: context.as.address, ...rawTx }, async (error, hash) => {
-            if (error) {
-              throw new Error('transact failed.')
-            } else {
-              resolve(await getTxReceipt$(hash))
-            }
-          })
-        }
-      } catch (e) {
-        reject(e)
-      }
-    })
-  }
-
-  function _transact (method, to, estimate, encoded) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        if (!estimate) estimate = await method.estimateGas({ from: context.as.address })
-        // workaround incorrect ABI encoding...
-        if (!encoded) encoded = await method.encodeABI()
-        const rawTx = {
-          gasPrice: web3.utils.toHex(web3.utils.toWei(context.options.gasPrice, 'gwei')),
-          gasLimit: web3.utils.toHex(estimate),
-          to: to,
-          value: '0x00',
-          data: encoded
-        }
-        return resolve(await _sendTransaction(rawTx))
-      } catch (e) {
-        console.log(e)
-        reject(e)
-      }
-    })
-  }
+  const campaign$ = address => Campaign(web3, address, { context, _decodeLog })
 
   const createCampaign = ({
     issuance = 1,
@@ -212,7 +145,7 @@ function RougeProtocol (web3, context = {}) {
         to: recipient.address,
         value: web3.utils.toHex(web3.utils.toWei(fuel, 'finney'))
       }
-      return resolve(await _sendTransaction(rawTx))
+      return resolve(await sendTransaction(web3, context, rawTx))
     } catch (e) {
       reject(e)
       // throw new Error('error sending sendFinney. [sendFinney]')

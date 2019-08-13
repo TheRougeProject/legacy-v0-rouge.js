@@ -3,11 +3,14 @@ import abi from 'ethereumjs-abi'
 
 import SimpleRougeCampaign from 'rouge-protocol-solidity/build/contracts/SimpleRougeCampaign.json'
 
-import { successfulTransact, universalAccount } from './utils'
-import { authHash } from './authUtils'
+import { universalAccount, transact, successfulTransact } from './utils'
+import { authHash, authHashProtocolSig } from './authUtils'
 import { RougeAuthorization } from './constants'
 
-export default function Campaign (web3, address, { context, _transact, _decodeLog }) {
+export default function Campaign (web3, address, { context, _decodeLog }) {
+
+  const _transact = (...args) => transact(web3, context, ...args)
+
   const instance = new web3.eth.Contract(SimpleRougeCampaign.abi, address, {})
 
   const version = async () => instance.methods.version().call()
@@ -61,7 +64,7 @@ export default function Campaign (web3, address, { context, _transact, _decodeLo
 
   const addAttestor = async ({attestor, auths}) => new Promise(async (resolve, reject) => {
     try {
-      attestor = universalAccount(attestor)
+      attestor = universalAccount(web3, attestor)
       // XXX check syntax attestor + auths
       const method = instance.methods.addAttestor(attestor.address, auths)
       // ! BUG in web3 1.0 (instance.abiModel.abi.methods.addAttestor) doesn't include Array
@@ -79,7 +82,7 @@ export default function Campaign (web3, address, { context, _transact, _decodeLo
 
   const removeAttestor = async ({attestor, auths}) => new Promise(async (resolve, reject) => {
     try {
-      attestor = universalAccount(attestor)
+      attestor = universalAccount(web3, attestor)
       // XXX check syntax attestor + auths
       const method = instance.methods.removeAttestor(attestor.address, auths)
       // ! BUG in web3 1.0 (instance.abiModel.abi.methods.addAttestor) doesn't include Array
@@ -163,10 +166,11 @@ export default function Campaign (web3, address, { context, _transact, _decodeLo
 
   const redeemNote = async (attestor, signedAuth) => new Promise(async (resolve, reject) => {
     try {
+      attestor = universalAccount(web3, attestor)
       // TODO test attestor != as if (rouge.validationMode)
       // TODO test attestor canRedeem if (rouge.validationMode)
       const auth = authHash('acceptRedemption', address, context.as.address)
-      const method = instance.methods.redeem(auth, signedAuth.v, signedAuth.r, signedAuth.s, attestor)
+      const method = instance.methods.redeem(auth, signedAuth.v, signedAuth.r, signedAuth.s, attestor.address)
       const receipt = await _transact(method, address)
       // console.log(receipt)
       if (!successfulTransact(receipt)) throw new Error('transact failed. [redeemNote]')
@@ -178,8 +182,9 @@ export default function Campaign (web3, address, { context, _transact, _decodeLo
 
   const acceptRedemption = async (bearer, signedAuth) => new Promise(async (resolve, reject) => {
     try {
-      const auth = authHash('acceptRedemption', address, bearer)
-      const method = instance.methods.acceptRedemption(auth, signedAuth.v, signedAuth.r, signedAuth.s, bearer)
+      bearer = universalAccount(web3, bearer)
+      const auth = authHash('acceptRedemption', address, bearer.address)
+      const method = instance.methods.acceptRedemption(auth, signedAuth.v, signedAuth.r, signedAuth.s, bearer.address)
       const receipt = await _transact(method, address)
       // console.log(receipt)
       if (!successfulTransact(receipt)) throw new Error('transact failed. [acceptRedemption]')
@@ -200,7 +205,14 @@ export default function Campaign (web3, address, { context, _transact, _decodeLo
     }
   })
 
+  const _generateSignedAuth = (message, account) => {
+    account = universalAccount(web3, account)
+    return authHashProtocolSig(message, address, account.address, context.as.privateKey)
+  }
+
   const $ = {
+    acceptAcquisitionSig$: bearer => _generateSignedAuth('acceptAcquisition', bearer),
+    acceptRedemptionSig$: bearer => _generateSignedAuth('acceptRedemption', bearer),
     removeAttestor,
     addAttestor,
     attachFuel,
@@ -242,11 +254,15 @@ export default function Campaign (web3, address, { context, _transact, _decodeLo
     getAllEvents
   }
 
+  $.as = account => {
+    context.as = universalAccount(web3, account)
+    return $
+  }
+
   $.issue = async args => {
     const receipt = await _issue(args)
     if (!successfulTransact(receipt)) throw new Error('can\'t issue campaign.')
-
-    return Object.freeze($)
+    return $
   }
 
   return Object.freeze($)

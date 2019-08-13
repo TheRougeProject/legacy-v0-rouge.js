@@ -17,7 +17,14 @@ const issuerAccount = web3.eth.accounts.privateKeyToAccount(issuerPkey)
 const campaignAddress = '0x79fe544d081210b15bcfbb0cbd9ca12c5c11226c'
 const campaign = rouge.as(issuerAccount).campaign$(campaignAddress)
 
-jest.setTimeout(50000)
+jest.setTimeout(10000)
+
+describe('campaign object is not extensible', () => {
+  test(
+    `adding attribut to object campaign should Throw`,
+    () => expect(() => { campaign.newAttribut = true }).toThrow()
+  )
+})
 
 describe('campaign.version()', () => {
   test(

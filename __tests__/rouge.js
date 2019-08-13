@@ -31,7 +31,7 @@ const userPkey = '0x222222222222222222222222222222222222222222222222222222222222
 const userAccount = web3.eth.accounts.privateKeyToAccount(userPkey)
 const userMinFuel = 10 // finney
 
-jest.setTimeout(50000)
+jest.setTimeout(10000)
 
 describe('Precondition tests', () => {
 
