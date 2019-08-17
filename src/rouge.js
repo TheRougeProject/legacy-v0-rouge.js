@@ -110,7 +110,7 @@ function RougeProtocol (web3, context = {}) {
       if (!successfulTransact(receipt)) throw new Error('can\'t instanciate new campaign.')
 
       const campaign = campaign$(NewCampaign.campaign)
-      resolve(campaign.issue({ ...args }))
+      resolve(campaign.issue({ scheme, ...args }))
     } catch (e) {
       reject(e)
     }

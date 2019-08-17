@@ -207,12 +207,13 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
 
   const _generateSignedAuth = (message, account) => {
     account = universalAccount(web3, account)
+    // if context.as == account throw
     return authHashProtocolSig(message, address, account.address, context.as.privateKey)
   }
 
   const $ = {
-    acceptAcquisitionSig$: bearer => _generateSignedAuth('acceptAcquisition', bearer),
-    acceptRedemptionSig$: bearer => _generateSignedAuth('acceptRedemption', bearer),
+    acceptAcquisitionSig$: account => _generateSignedAuth('acceptAcquisition', account),
+    acceptRedemptionSig$: account => _generateSignedAuth('acceptRedemption', account),
     removeAttestor,
     addAttestor,
     attachFuel,

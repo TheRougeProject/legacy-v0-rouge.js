@@ -58,6 +58,13 @@ describe('Precondition tests', () => {
 
 const rouge = RougeProtocol(web3)
 
+describe('rouge protocol object is not extensible', () => {
+  test(
+    `adding attribut to object should Throw`,
+    () => expect(() => { rouge.newAttribut = true }).toThrow()
+  )
+})
+
 describe('RougeProtocol RGE object', () => {
 
   test('RGE$address', async () => {
@@ -113,7 +120,13 @@ describe('RougeProtocol account object', () => {
 describe('rouge.createCampaign()', () => {
 
   const campaignName = 'Jest __tests__ campaign'
-  const campaignPromise = rouge.as(issuerAccount).createCampaign({ name: campaignName })
+  const campaignScheme = '0x0001ffee'
+  const campaignIssuance = 2
+  const campaignPromise = rouge.as(issuerAccount).createCampaign({
+    name: campaignName,
+    issuance: campaignIssuance,
+    scheme: campaignScheme
+  })
 
   test('return campaign object', async () => {
     expect.assertions(3)
@@ -130,6 +143,16 @@ describe('rouge.createCampaign()', () => {
   test('campaign.name', async () => {
     const campaign = await campaignPromise
     return expect(campaign.name).resolves.toEqual(campaignName)
+  })
+
+  test('campaign.scheme', async () => {
+    const campaign = await campaignPromise
+    return expect(campaign.scheme).resolves.toEqual(campaignScheme)
+  })
+
+  test('campaign.issuance', async () => {
+    const campaign = await campaignPromise
+    return expect(campaign.issuance).resolves.toEqual(campaignIssuance.toString())
   })
 
   test('campaign.canDistribute', async () => {

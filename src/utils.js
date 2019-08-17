@@ -56,7 +56,7 @@ export const sendTransaction = (web3, context, rawTx) => new Promise(async (reso
         if (error) {
           throw new Error('transact failed.')
         } else {
-          resolve(await getTxReceipt$(hash))
+          resolve(await getTxReceipt$(web3, hash))
         }
       })
     }
