@@ -77,9 +77,9 @@ export const transact = (web3, context, method, to, estimate, encoded) => new Pr
       value: '0x00',
       data: encoded
     }
-    return resolve(await sendTransaction(web3, context, rawTx))
+    resolve(await sendTransaction(web3, context, rawTx))
   } catch (e) {
-    console.log(e)
+    console.log('transact failed:', e)
     reject(e)
   }
 })

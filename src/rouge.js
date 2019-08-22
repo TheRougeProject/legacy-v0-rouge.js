@@ -13,7 +13,8 @@ const defaultContext = {
     gasPrice: '1'
   },
   // TODO automatic scheme management
-  scheme: '0x0001ffff'
+  scheme: '0x0001ffff',
+  mode: 'chaining'
 }
 
 // account is Object with web3 1.x structure :
@@ -162,27 +163,41 @@ function RougeProtocol (web3, context = {}) {
     get factory$ () { return factory$ },
     get account$ () { return account$() },
     campaign$,
-    // verb => potentially mutation, always return Promise, pipe always end
+    // verb => potential mutation, always return Promise, pipe always end
     createCampaign,
     getCampaignList,
-    // return Promise true/false or PromiEvent ?
     sendFinney
   }
 
   // noun => change object context, no Promise
 
-  $.scheme = code => {
+  // mode
+  // 1. chaining => Promisent is passed to handler
+  // 2. web3 => return PromiEvent
+  // 3. async => return standard Promise on tx
+
+  $.setMode = mode => {
+    if (['chaining', 'web3', 'async'].includes(mode)) {
+      // use description or hex
+      context.mode = mode
+      return $
+    } else {
+      throw new Error(`mode ${mode} does not exist`)
+    }
+  }
+
+  $.setScheme = code => {
     // use description or hex
     context.scheme = universalScheme(code)
-    return Object.freeze($)
+    return $
   }
 
   $.as = account => {
     context.as = universalAccount(web3, account)
-    return Object.freeze($)
+    return $
   }
 
-  return $.as(context.as)
+  return Object.freeze($).as(context.as)
 }
 
 export default RougeProtocol

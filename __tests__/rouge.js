@@ -31,7 +31,7 @@ const userPkey = '0x222222222222222222222222222222222222222222222222222222222222
 const userAccount = web3.eth.accounts.privateKeyToAccount(userPkey)
 const userMinFuel = 10 // finney
 
-jest.setTimeout(10000)
+jest.setTimeout(12000)
 
 describe('Precondition tests', () => {
 
@@ -169,8 +169,12 @@ describe('rouge.createCampaign()', () => {
     const campaign = await campaignPromise
     expect.assertions(3)
     await expect(campaign.acquired).resolves.toEqual('0')
+    // hash mode
     await expect(campaign.distributeNote(userAccount.address)).resolves.toHaveProperty('blockHash')
     await expect(campaign.acquired).resolves.toEqual('1')
+    // todo
+    // const mutation = campaign.distributeNote(userAccount.address)
+    // console.log(mutation) => test all modes
   })
 
 })
