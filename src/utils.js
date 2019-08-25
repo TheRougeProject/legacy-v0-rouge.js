@@ -44,10 +44,10 @@ export const transact = async (web3, context, method, to, estimate, encoded) => 
     }
     return sendTransaction(web3, context, rawTx)
   } catch (e) {
-    Promise.reject(new Error(`[rouge.js] transact failed: ${e}`))
+    return Promise.reject(new Error(`[rouge.js] transact failed: ${e}`))
   }
 }
 
 // workaround : web3 1.0 return sometimes receipt.status = true/false, sometimes '0x1'/'0x0''
 
-export const successfulTransact = receipt => (receipt.status || receipt.status === '0x1')
+export const successfulTransact = receipt => (receipt && (receipt.status || receipt.status === '0x1'))

@@ -92,12 +92,12 @@ function RougeProtocol (web3, context = {}) {
 
   const campaign$ = address => Campaign(web3, address, { context, _decodeLog })
 
-  const createCampaign = ({
+  const createCampaign = async ({
     issuance = 1,
     tokens,
     scheme = context.scheme,
     ...args
-  }) => new Promise(async (resolve, reject) => { // eslint-line-disable no-async-promise-executor
+  }) => {
     try {
       if (!tokens) {
         const tare = web3.utils.toBN(await factory$tare())
@@ -116,16 +116,18 @@ function RougeProtocol (web3, context = {}) {
       const NewCampaign = _decodeLog('NewCampaign', receipt.logs[3])
       // console.log('NewCampaign', NewCampaign)
 
-      if (!successfulTransact(receipt)) throw new Error('can\'t instanciate new campaign.')
+      if (!successfulTransact(receipt)) Promise.reject(new Error(`[rouge.js] createCampaign tx failed`))
 
       const campaign = campaign$(NewCampaign.campaign)
-      resolve(campaign.issue({ scheme, ...args }))
-    } catch (e) {
-      reject(e)
-    }
-  })
+      await campaign.issue({ scheme, ...args })
 
-  const getCampaignList = ({scheme, issuer}) => new Promise(async (resolve, reject) => {
+      return Promise.resolve(campaign)
+    } catch (e) {
+      return Promise.reject(new Error(`[rouge.js] createCampaign failed: ${e}`))
+    }
+  }
+
+  const getCampaignList = async ({scheme, issuer}) => {
     try {
       // const logs = await web3.eth.getPastLogs({
       //   address: factoryAddress,
@@ -139,13 +141,13 @@ function RougeProtocol (web3, context = {}) {
         // event Issuance(bytes4 scheme, string name, uint campaignExpiration) => add issuer + version
         topics: ['0x61d7bd1b44357bca3ed4bd238fec71f1710af7c589ab829be7f3be96caa6c5eb']
       })
-      resolve(logs.map(log => log.address))
+      return Promise.resolve(logs.map(log => log.address))
     } catch (e) {
-      reject(e)
+      return Promise.reject(new Error(`[rouge.js] getCampaignList failed: ${e}`))
     }
-  })
+  }
 
-  const sendFinney = ({fuel, recipient}) => new Promise(async (resolve, reject) => {
+  const sendFinney = async ({fuel, recipient}) => {
     try {
       recipient = universalAccount(web3, recipient)
       const rawTx = {
@@ -154,12 +156,11 @@ function RougeProtocol (web3, context = {}) {
         to: recipient.address,
         value: web3.utils.toHex(web3.utils.toWei(fuel, 'finney'))
       }
-      return resolve(await sendTransaction(web3, context, rawTx))
+      return sendTransaction(web3, context, rawTx)
     } catch (e) {
-      reject(e)
-      // throw new Error('error sending sendFinney. [sendFinney]')
+      return Promise.reject(new Error(`[rouge.js] sendFinney failed: ${e}`))
     }
-  })
+  }
 
   const $ = {
     // get options$$ () { return context.options },

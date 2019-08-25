@@ -62,7 +62,7 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
     })
   }
 
-  const addAttestor = async ({attestor, auths}) => new Promise(async (resolve, reject) => {
+  const addAttestor = async ({attestor, auths}) => {
     try {
       attestor = universalAccount(web3, attestor)
       // XXX check syntax attestor + auths
@@ -73,14 +73,14 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
       ).toString('hex')
 
       const receipt = await _transact(method, address, 46842, encoded)
-      if (!successfulTransact(receipt)) throw new Error('can\'t change authorization. [addAttestor]')
-      resolve(true)
+      if (!successfulTransact(receipt)) throw new Error('tx not successful')
+      return Promise.resolve(true)
     } catch (e) {
-      reject(e)
+      return Promise.reject(new Error(`[rouge.js] addAttestor failed: ${e}`))
     }
-  })
+  }
 
-  const removeAttestor = async ({attestor, auths}) => new Promise(async (resolve, reject) => {
+  const removeAttestor = async ({attestor, auths}) => {
     try {
       attestor = universalAccount(web3, attestor)
       // XXX check syntax attestor + auths
@@ -91,16 +91,16 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
       ).toString('hex')
 
       const receipt = await _transact(method, address, 46842, encoded)
-      if (!successfulTransact(receipt)) throw new Error('can\'t change authorization. [removeAttestor]')
-      resolve(true)
+      if (!successfulTransact(receipt)) throw new Error('tx not successful')
+      return Promise.resolve(true)
     } catch (e) {
-      reject(e)
+      return Promise.reject(new Error(`[rouge.js] removeAttestor failed: ${e}`))
     }
-  })
+  }
 
-  const attachFuel = async bearer => Promise.reject(new Error('not implement'))
-  const attachERC20 = async bearer => Promise.reject(new Error('not implement'))
-  const attachERC721 = async bearer => Promise.reject(new Error('not implement'))
+  const attachFuel = async bearer => Promise.reject(new Error('[rouge.js] not implement'))
+  const attachERC20 = async bearer => Promise.reject(new Error('[rouge.js] not implement'))
+  const attachERC721 = async bearer => Promise.reject(new Error('[rouge.js] not implement'))
 
   const _issue = async ({
     name = '',
@@ -109,7 +109,7 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
     expiration = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 14,
     attestor,
     auths
-  }) => new Promise(async (resolve, reject) => {
+  }) => {
     try {
       let method
       let encoded
@@ -129,42 +129,41 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
       // const Issuance = _decodeLog('Issuance', receipt2.logs[0])
       // console.log("Issuance", Issuance)
 
-      resolve(receipt)
+      return Promise.resolve(receipt)
     } catch (e) {
-      reject(e)
+      return Promise.reject(new Error(`[rouge.js] issueCampaign failed: ${e}`))
     }
-  })
+  }
 
-  const issueWithAttestor = async bearer => Promise.reject(new Error('not implement'))
+  const issueWithAttestor = async bearer => Promise.reject(new Error('[rouge.js] not implement'))
 
-  const distributeNote = async bearer => new Promise(async (resolve, reject) => {
+  const distributeNote = async bearer => {
     try {
       // TODO test bearer != as if (rouge.validationMode)
       const method = instance.methods.distributeNote(bearer)
       const receipt = await _transact(method, address)
-      // console.log(receipt)
-      if (!successfulTransact(receipt)) throw new Error('transact failed. [distributeNote]')
-      resolve(receipt)
+      if (!successfulTransact(receipt)) throw new Error('tx not successful')
+      return Promise.resolve(receipt)
     } catch (e) {
-      reject(e)
+      return Promise.reject(new Error(`[rouge.js] distributeNote failed: ${e}`))
     }
-  })
+  }
 
-  const acquireNote = async (attestor, signedAuth) => new Promise(async (resolve, reject) => {
+  const acquireNote = async (attestor, signedAuth) => {
     try {
       // TODO test attestor != as if (rouge.validationMode)
       // TODO test attestor canDistribute if (rouge.validationMode)
       const auth = authHash('acceptAcquisition', address, context.as.address)
       const method = instance.methods.acquire(auth, signedAuth.v, signedAuth.r, signedAuth.s, attestor)
       const receipt = await _transact(method, address)
-      if (!successfulTransact(receipt)) throw new Error('transact failed. [acquireNote]')
-      resolve(receipt)
+      if (!successfulTransact(receipt)) throw new Error('tx not successful')
+      return Promise.resolve(receipt)
     } catch (e) {
-      reject(e)
+      return Promise.reject(new Error(`[rouge.js] distributeNote failed: ${e}`))
     }
-  })
+  }
 
-  const redeemNote = async (attestor, signedAuth) => new Promise(async (resolve, reject) => {
+  const redeemNote = async (attestor, signedAuth) => {
     try {
       attestor = universalAccount(web3, attestor)
       // TODO test attestor != as if (rouge.validationMode)
@@ -173,37 +172,37 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
       const method = instance.methods.redeem(auth, signedAuth.v, signedAuth.r, signedAuth.s, attestor.address)
       const receipt = await _transact(method, address)
       // console.log(receipt)
-      if (!successfulTransact(receipt)) throw new Error('transact failed. [redeemNote]')
-      resolve(receipt)
+      if (!successfulTransact(receipt)) throw new Error('tx not successful')
+      return Promise.resolve(receipt)
     } catch (e) {
-      reject(e)
+      return Promise.reject(new Error(`[rouge.js] redeemNote failed: ${e}`))
     }
-  })
+  }
 
-  const acceptRedemption = async (bearer, signedAuth) => new Promise(async (resolve, reject) => {
+  const acceptRedemption = async (bearer, signedAuth) => {
     try {
       bearer = universalAccount(web3, bearer)
       const auth = authHash('acceptRedemption', address, bearer.address)
       const method = instance.methods.acceptRedemption(auth, signedAuth.v, signedAuth.r, signedAuth.s, bearer.address)
       const receipt = await _transact(method, address)
       // console.log(receipt)
-      if (!successfulTransact(receipt)) throw new Error('transact failed. [acceptRedemption]')
-      resolve(receipt)
+      if (!successfulTransact(receipt)) throw new Error('tx not successful')
+      return Promise.resolve(receipt)
     } catch (e) {
-      reject(e)
+      return Promise.reject(new Error(`[rouge.js] acceptRedemption failed: ${e}`))
     }
-  })
+  }
 
-  const kill = async () => new Promise(async (resolve, reject) => {
+  const kill = async () => {
     try {
       const method = instance.methods.kill()
       const receipt = await _transact(method, address)
-      if (!successfulTransact(receipt)) throw new Error('transact failed. [acceptRedemption]')
-      resolve(receipt)
+      if (!successfulTransact(receipt)) throw new Error('tx not successful')
+      return Promise.resolve(receipt)
     } catch (e) {
-      reject(e)
+      return Promise.reject(new Error(`[rouge.js] kill failed: ${e}`))
     }
-  })
+  }
 
   const _generateSignedAuth = (message, account) => {
     account = universalAccount(web3, account)
