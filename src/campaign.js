@@ -30,17 +30,17 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
   const acquired = async () => instance.methods.acquired().call()
   const redeemed = async () => instance.methods.redeemed().call()
 
-  const isAuthorized = async (address, auth) => (await instance.methods.isAuthorized(
+  const _isAuthorized = async (address, auth) => (await instance.methods.isAuthorized(
     address, RougeAuthorization.All
   ).call()) || instance.methods.isAuthorized(
     address, auth
   ).call()
 
-  const canAttach = () => isAuthorized(context.as.address, RougeAuthorization.Attachment)
-  const canIssue = () => isAuthorized(context.as.address, RougeAuthorization.Issuance)
-  const canDistribute = () => isAuthorized(context.as.address, RougeAuthorization.Acquisition)
-  const canSignRedemption = () => isAuthorized(context.as.address, RougeAuthorization.Redemption)
-  const canKill = () => isAuthorized(context.as.address, RougeAuthorization.Kill)
+  const canAttach = () => _isAuthorized(context.as.address, RougeAuthorization.Attachment)
+  const canIssue = () => _isAuthorized(context.as.address, RougeAuthorization.Issuance)
+  const canDistribute = () => _isAuthorized(context.as.address, RougeAuthorization.Acquisition)
+  const canSignRedemption = () => _isAuthorized(context.as.address, RougeAuthorization.Redemption)
+  const canKill = () => _isAuthorized(context.as.address, RougeAuthorization.Kill)
 
   const hasNote = async bearer => { // TODO cleanup
     const res = await instance.methods.hasNote(bearer).call()
@@ -225,7 +225,6 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
     redeemNote,
     acceptRedemption,
     kill,
-    isAuthorized,
     get address () { return Promise.resolve(address) },
     get tare () { return tare() },
     get version () { return version() },

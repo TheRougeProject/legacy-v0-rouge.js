@@ -8,13 +8,21 @@ import { universalAccount, universalScheme, sendTransaction, transact, successfu
 
 import Campaign from './campaign'
 
+const defaultPromiEventCallback = (eventName, e) => {
+  console.log(eventName, e)
+}
+
 const defaultContext = {
   options: {
     gasPrice: '1'
   },
   // TODO automatic scheme management
   scheme: '0x0001ffff',
-  mode: 'chaining'
+  mode: 'chaining',
+  onceTransactionHash: x => defaultPromiEventCallback('onceTransactionHash', x),
+  onceReceipt: x => defaultPromiEventCallback('onceReceipt', x),
+  onConfirmation: x => defaultPromiEventCallback('onConfirmation', x),
+  onError: x => defaultPromiEventCallback('onError', x)
 }
 
 // account is Object with web3 1.x structure :
