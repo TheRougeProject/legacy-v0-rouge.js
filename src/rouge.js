@@ -164,8 +164,6 @@ function RougeProtocol (web3, context = {}) {
 
   const $ = {
     // get options$$ () { return context.options },
-    // set alteernative (account) { context.as = universalAccount(web3, account) },
-    // getTxReceipt$,
     // protocol object with properties (non Promise & end with $) // no blockchain mutation & no pipe
     get AUTH$ () { return RougeAuthorization },
     get RGE$ () { return RGE$ },
