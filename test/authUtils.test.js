@@ -1,5 +1,5 @@
 
-/* global describe:true it:true expect: true */
+/* global describe:true test:true expect: true */
 /* eslint-disable max-len */
 
 import { authHash, authHashProtocolSig, authHashRpcSig, rougeQR, decodeRougeQR } from '../src/index'
