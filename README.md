@@ -40,12 +40,18 @@ or npm
 
 ### Usage
 
+Using [web3.js](https://web3js.readthedocs.io/en/v1.2.2/), creating a campaign is as simple
+as these three lines:
+
 ```js
 import { RougeProtocol } from 'rouge.js'
 
+const rouge = RougeProtocol(web3)
+
+const campaign = rouge.as(account).createCampaign()
 ```
 
-[Online documentation](https://rouge.network/).
+[Online full documentation](https://rouge.network/).
 
 
 <!--
