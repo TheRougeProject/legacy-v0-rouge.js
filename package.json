@@ -37,8 +37,9 @@
     "cli": "NODE_ENV=test nodemon --exec babel-node src/cli.js",
     "example": "NODE_ENV=test babel-node examples/simple.js",
     "example-list": "NODE_ENV=test babel-node examples/simple.js",
+    "example2": "NODE_ENV=test babel-node examples/basic.js",
     "lint": "yarn run lint:eslint",
-    "lint:eslint": "eslint src/*.js __tests__/*.js",
+    "lint:eslint": "eslint src/*.js test/*.js",
     "test": "jest --verbose",
     "test:coverage": "jest --coverage",
     "test:watch": "clear && jest --watch",
@@ -60,7 +61,7 @@
   },
   "jest": {
     "transform": {
-      ".js$": "babel-7-jest"
+      ".js$": "babel-jest"
     },
     "testPathIgnorePatterns": [
       "/node_modules/",
@@ -68,12 +69,11 @@
     ]
   },
   "devDependencies": {
-    "@babel/cli": "^7.6.3",
-    "@babel/core": "^7.6.3",
-    "@babel/node": "^7.6.3",
-    "@babel/preset-env": "^7.6.3",
+    "@babel/cli": "^7.7.0",
+    "@babel/core": "^7.7.0",
+    "@babel/node": "^7.7.0",
+    "@babel/preset-env": "^7.7.0",
     "babel-eslint": "^10.0.3",
-    "babel-7-jest": "^21.3.3",
     "babel-jest": "^24.9.0",
     "babel-plugin-relative-path-import": "^2.0.1",
     "coveralls": "^3.0.7",
@@ -85,27 +85,28 @@
     "eslint-plugin-node": "^9.2.0",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.1",
-    "ganache-cli": "^6.7.0",
+    "ganache-core": "^2.8.0",
     "husky": "^3.0.9",
     "jest": "^24.9.0",
     "moment": "^2.24.0",
     "nodemon": "^1.19.4",
     "release-it": "^12.4.3",
     "rimraf": "^2.7.1",
-    "rollup": "^1.26.0",
+    "rollup": "^1.26.3",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-bundle-size": "^1.0.2",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-ignore": "^1.0.5",
     "rollup-plugin-json": "^4.0.0",
     "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-uglify": "^6.0.3"
+    "rollup-plugin-uglify": "^6.0.3",
+    "solc": "^0.5.12"
   },
   "dependencies": {
     "ethereumjs-abi": "^0.6.8",
     "ethereumjs-util": "^6.1.0",
     "hex64": "^0.4.0",
-    "rouge-protocol-solidity": "0.17.0",
+    "rouge-protocol-solidity": "0.20.0",
     "web3": "^1.2.1"
   },
   "husky": {

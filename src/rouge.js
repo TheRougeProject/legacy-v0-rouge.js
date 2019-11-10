@@ -38,7 +38,7 @@ function RougeProtocol (web3, context = {}) {
 
   const _transact = (...args) => transact(web3, context, ...args)
 
-  const RGE$address = async () => RougeProtocolAddress[await web3.eth.net.getId()].rge
+  const RGE$address = async () => (context.rge || RougeProtocolAddress[await web3.eth.net.getId()].rge)
   const RGE$web3instance = async () => new web3.eth.Contract(RGEToken.abi, await RGE$address(), {})
   const RGE$balanceOf = async address => (await RGE$web3instance()).methods.balanceOf(address).call()
 
@@ -92,17 +92,14 @@ function RougeProtocol (web3, context = {}) {
 
   const campaign$ = address => Campaign(web3, address, { context, _decodeLog })
 
-  const createCampaign = async ({
-    issuance = 1,
-    tokens,
-    scheme = context.scheme,
-    ...args
-  }) => {
+  const createCampaign = async (params = {}) => {
+    if (!params.issuance) params.issuance = 1
+    if (!params.tokens) {
+      const tare = web3.utils.toBN(await factory$tare())
+      params.tokens = web3.utils.toBN(params.issuance).mul(tare)
+    }
+    const { issuance, tokens, scheme, ...args } = { scheme: context.scheme, ...params }
     try {
-      if (!tokens) {
-        const tare = web3.utils.toBN(await factory$tare())
-        tokens = web3.utils.toBN(issuance).mul(tare)
-      }
       // always check if enough token ? only if check options
       // check enought RGE
       const method = (await RGE$web3instance()).methods.newCampaign(issuance, tokens.toString())

@@ -13,7 +13,7 @@ const testQR = 'lV0grtzhInlBsS-ieqHHevdY4QxxWTZ9nIkzm5oXuR1CDRY_EarFMBk_53c4Bt_H
 
 describe('authHash', () => {
 
-  it('authHash', () => {
+  test('authHash', () => {
     const result = authHash('test', campaign, bearer)
     expect(result).toBe('0xaf559c04bf271bb8334896050e30475b9aecfb9ca9b4dd3e3a53bff92ff166c4')
   })
@@ -22,7 +22,7 @@ describe('authHash', () => {
 
 describe('authHashProtocolSig', () => {
 
-  it('authHashProtocolSig', () => {
+  test('authHashProtocolSig', () => {
     const result = authHashProtocolSig('test', campaign, bearer, bearerPkey)
     expect(result).toEqual({r: '0x3d322f73b8d7d487942b96f9f492ae505ecb96cb1ecf25b19ebbb94f3e8025ed', s: '0x6b415e8587da03572cd7ed3752f855cafe628bd9d79f2db54d61b2facfcb34ba', v: 28})
   })
@@ -31,7 +31,7 @@ describe('authHashProtocolSig', () => {
 
 describe('authHashRpcSig', () => {
 
-  it('authHashRpcSig', () => {
+  test('authHashRpcSig', () => {
     const result = authHashRpcSig('test', campaign, bearer, bearerPkey)
     expect(result).toBe('0x45a818e4de1073e981db14fa7defe0808c14badaada723c0d5eb17c44f82325771a7a1388c57533d7f1594d2f59a0ec1681286d399725a9e3294ac80e641a1811b')
   })
@@ -40,7 +40,7 @@ describe('authHashRpcSig', () => {
 
 describe('rougeQR', () => {
 
-  it('rougeQR', () => {
+  test('rougeQR', () => {
     const result = rougeQR('test' + campaign, campaign, bearer, bearerPkey)
     expect(result).toBe(testQR)
   })
@@ -53,7 +53,7 @@ const getCampaign = function (msg, bearer) {
 
 describe('decodeRougeQR', () => {
 
-  it('decodeRougeQR', () => {
+  test('decodeRougeQR', () => {
     const result = decodeRougeQR(testQR, getCampaign)
     expect(result).toEqual({msg: 'test' + campaign, campaign, bearer})
   })
