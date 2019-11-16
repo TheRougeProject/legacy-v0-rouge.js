@@ -67,12 +67,9 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
       attestor = universalAccount(web3, attestor)
       // XXX check syntax attestor + auths
       const method = instance.methods.addAttestor(attestor.address, auths)
-      // ! BUG in web3 1.0 (instance.abiModel.abi.methods.addAttestor) doesn't include Array
-      const encoded = '0x' + abi.simpleEncode(
-        'addAttestor(address,uint8[])', attestor.address, auths
-      ).toString('hex')
+      // const receipt = await _transact(method, address, 46842)
+      const receipt = await _transact(method, address)
 
-      const receipt = await _transact(method, address, 46842, encoded)
       if (!successfulTransact(receipt)) throw new Error('tx not successful')
       return Promise.resolve(true)
     } catch (e) {

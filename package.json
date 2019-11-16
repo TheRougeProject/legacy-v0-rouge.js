@@ -70,7 +70,7 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.7.0",
-    "@babel/core": "^7.7.0",
+    "@babel/core": "^7.7.2",
     "@babel/node": "^7.7.0",
     "@babel/preset-env": "^7.7.0",
     "babel-eslint": "^10.0.3",
@@ -92,22 +92,19 @@
     "nodemon": "^1.19.4",
     "release-it": "^12.4.3",
     "rimraf": "^2.7.1",
-    "rollup": "^1.26.3",
+    "rollup": "^1.27.0",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-bundle-size": "^1.0.2",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-ignore": "^1.0.5",
     "rollup-plugin-json": "^4.0.0",
     "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-uglify": "^6.0.3",
-    "solc": "^0.5.12"
+    "rollup-plugin-uglify": "^6.0.3"
   },
   "dependencies": {
-    "ethereumjs-abi": "^0.6.8",
-    "ethereumjs-util": "^6.1.0",
     "hex64": "^0.4.0",
     "rouge-protocol-solidity": "0.20.0",
-    "web3": "^1.2.1"
+    "web3": "^1.2.4"
   },
   "husky": {
     "hooks": {

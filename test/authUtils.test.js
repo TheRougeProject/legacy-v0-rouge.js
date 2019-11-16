@@ -24,7 +24,7 @@ describe('authHashProtocolSig', () => {
 
   test('authHashProtocolSig', () => {
     const result = authHashProtocolSig('test', campaign, bearer, bearerPkey)
-    expect(result).toEqual({r: '0x3d322f73b8d7d487942b96f9f492ae505ecb96cb1ecf25b19ebbb94f3e8025ed', s: '0x6b415e8587da03572cd7ed3752f855cafe628bd9d79f2db54d61b2facfcb34ba', v: 28})
+    expect(result).toEqual({r: '0x3d322f73b8d7d487942b96f9f492ae505ecb96cb1ecf25b19ebbb94f3e8025ed', s: '0x6b415e8587da03572cd7ed3752f855cafe628bd9d79f2db54d61b2facfcb34ba', recoveryParam: 1, v: 28})
   })
 
 })
