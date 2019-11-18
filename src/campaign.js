@@ -1,6 +1,4 @@
 
-import abi from 'ethereumjs-abi'
-
 import SimpleRougeCampaign from 'rouge-protocol-solidity/build/contracts/SimpleRougeCampaign.json'
 
 import { universalAccount, transact, successfulTransact } from './utils'
@@ -83,11 +81,11 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
       // XXX check syntax attestor + auths
       const method = instance.methods.removeAttestor(attestor.address, auths)
       // ! BUG in web3 1.0 (instance.abiModel.abi.methods.addAttestor) doesn't include Array
-      const encoded = '0x' + abi.simpleEncode(
-        'addAttestor(address,uint8[])', attestor.address, auths
-      ).toString('hex')
+      // const encoded = '0x' + abi.simpleEncode(
+      //   'addAttestor(address,uint8[])', attestor.address, auths
+      // ).toString('hex')
 
-      const receipt = await _transact(method, address, 46842, encoded)
+      const receipt = await _transact(method, address)
       if (!successfulTransact(receipt)) throw new Error('tx not successful')
       return Promise.resolve(true)
     } catch (e) {
@@ -109,19 +107,19 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
   }) => {
     try {
       let method
-      let encoded
+      // let encoded
       // check expiration
       // TODO check attestor & grant syntax/rules
       if (attestor && auths) {
-        encoded = '0x' + abi.simpleEncode(
-          'issueWithAttestor(bytes4,string,uint,address,uint8[])', scheme, name, expiration, attestor, auths
-        ).toString('hex')
+        // encoded = '0x' + abi.simpleEncode(
+        //   'issueWithAttestor(bytes4,string,uint,address,uint8[])', scheme, name, expiration, attestor, auths
+        // ).toString('hex')
         method = instance.methods.issueWithAttestor(scheme, name, expiration, attestor, auths)
       } else {
         method = instance.methods.issue(scheme, name, expiration)
       }
 
-      const receipt = await _transact(method, address, null, encoded)
+      const receipt = await _transact(method, address)
 
       // const Issuance = _decodeLog('Issuance', receipt2.logs[0])
       // console.log("Issuance", Issuance)
