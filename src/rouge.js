@@ -32,8 +32,11 @@ function RougeProtocol (web3, context = {}) {
   context = { ...defaultContext, ...context }
 
   /* TODO better check valid web3 */
+  if (!web3) {
+    throw new Error('rouge.js: missing valid web3 instance to initiate')
+  }
   if (!/^1./.test(web3.version)) {
-    throw new Error('beta rouge.js can only be used with web3js 1.x')
+    throw new Error('rouge.js: can only be used with web3js 1.x')
   }
 
   const _transact = (...args) => transact(web3, context, ...args)

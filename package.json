@@ -6,9 +6,6 @@
   "browser": "dist/umd/rouge.js",
   "module": "dist/es/index.js",
   "jsxnext:main": "dist/es/index.js",
-  "bin": {
-    "rouge-cli": "dist/es/cli.js"
-  },
   "files": [
     "dist",
     "src"
