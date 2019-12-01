@@ -61,8 +61,7 @@
       ".js$": "babel-jest"
     },
     "testPathIgnorePatterns": [
-      "/node_modules/",
-      "create.js"
+      "/node_modules/"
     ]
   },
   "devDependencies": {
