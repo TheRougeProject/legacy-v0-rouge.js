@@ -1,32 +1,36 @@
-import babel from 'rollup-plugin-babel'
-import nodeResolve from 'rollup-plugin-node-resolve'
-// import uglify from 'rollup-plugin-uglify'
-// import bundleSize from 'rollup-plugin-bundle-size'
-import commonjs from 'rollup-plugin-commonjs'
-import json from 'rollup-plugin-json'
+import resolve from 'rollup-plugin-node-resolve';
+import commonjs from 'rollup-plugin-commonjs';
+import pkg from './package.json';
+import json from 'rollup-plugin-json';
+import size from 'rollup-plugin-bundle-size';
 
-const name = `rouge`
+export default [
+	// browser-friendly UMD build
+	{
+		input: 'src/index.js',
+		output: {
+			name: 'rouge.js',
+			file: pkg.browser,
+			format: 'umd'
+		},
+		plugins: [
+          json(),
+		  resolve(),
+		  commonjs(),
+          size()
+		]
+	},
 
-const plugins = [
-  babel({ exclude: [ 'contracts/**' ] }),
-  json({ exclude: [ 'node_modules/**' ] }),
-  nodeResolve({
-    module: true,
-    jsnext: true
-  }),
-  commonjs({
-    include: `node_modules/**`
-  }) // ,
-  // bundleSize() TODO fix 'Path must be a string. Received undefined' bug
-]
-
-const isProd = process.env.NODE_ENV === `production`
-// if (isProd) plugins.push(uglify()); TODO fix problem with json
-
-export default {
-  entry: `src/index.js`,
-  plugins,
-  dest: `dist/umd/${name}${isProd ? `.min` : ``}.js`,
-  moduleName: name,
-  format: `umd`
-}
+	// CommonJS (for Node) and ES module (for bundlers) build.
+	{
+		input: 'src/index.js',
+		external: ['ms'],
+		plugins: [
+          json(),
+		],
+		output: [
+			{ file: pkg.main, format: 'cjs' },
+			{ file: pkg.module, format: 'es' }
+		]
+	}
+];

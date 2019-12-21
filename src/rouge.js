@@ -4,7 +4,7 @@ import RougeFactory from 'rouge-protocol-solidity/build/contracts/RougeFactory.j
 import SimpleRougeCampaign from 'rouge-protocol-solidity/build/contracts/SimpleRougeCampaign.json'
 
 import { RougeProtocolAddress, RougeAuthorization } from './constants'
-import { universalAccount, universalScheme, sendTransaction, transact, successfulTransact } from './utils'
+import { universalAccount, universalScheme, sendTransaction, transact, successfulTransact } from './internalUtils'
 
 import Campaign from './campaign'
 

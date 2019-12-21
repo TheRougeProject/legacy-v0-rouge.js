@@ -1,9 +1,10 @@
 
 import SimpleRougeCampaign from 'rouge-protocol-solidity/build/contracts/SimpleRougeCampaign.json'
 
-import { universalAccount, transact, successfulTransact } from './utils'
-import { authHash, authHashProtocolSig } from './authUtils'
+import { universalAccount, transact, successfulTransact } from './internalUtils'
 import { RougeAuthorization } from './constants'
+
+import RougeUtils from './utils'
 
 export default function Campaign (web3, address, { context, _decodeLog }) {
 
@@ -148,7 +149,7 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
     try {
       // TODO test attestor != as if (rouge.validationMode)
       // TODO test attestor canDistribute if (rouge.validationMode)
-      const auth = authHash('acceptAcquisition', address, context.as.address)
+      const auth = RougeUtils(web3).authHash('acceptAcquisition', address, context.as.address)
       const method = instance.methods.acquire(auth, signedAuth.v, signedAuth.r, signedAuth.s, attestor)
       const receipt = await _transact(method, address)
       if (!successfulTransact(receipt)) throw new Error('tx not successful')
@@ -163,7 +164,7 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
       attestor = universalAccount(web3, attestor)
       // TODO test attestor != as if (rouge.validationMode)
       // TODO test attestor canRedeem if (rouge.validationMode)
-      const auth = authHash('acceptRedemption', address, context.as.address)
+      const auth = RougeUtils(web3).authHash('acceptRedemption', address, context.as.address)
       const method = instance.methods.redeem(auth, signedAuth.v, signedAuth.r, signedAuth.s, attestor.address)
       const receipt = await _transact(method, address)
       // console.log(receipt)
@@ -177,7 +178,7 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
   const acceptRedemption = async (bearer, signedAuth) => {
     try {
       bearer = universalAccount(web3, bearer)
-      const auth = authHash('acceptRedemption', address, bearer.address)
+      const auth = RougeUtils(web3).authHash('acceptRedemption', address, bearer.address)
       const method = instance.methods.acceptRedemption(auth, signedAuth.v, signedAuth.r, signedAuth.s, bearer.address)
       const receipt = await _transact(method, address)
       // console.log(receipt)
@@ -202,7 +203,7 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
   const _generateSignedAuth = (message, account) => {
     account = universalAccount(web3, account)
     // if context.as == account throw
-    return authHashProtocolSig(message, address, account.address, context.as.privateKey)
+    return RougeUtils(web3).authHashProtocolSig(message, address, account.address, context.as.privateKey)
   }
 
   const $ = {

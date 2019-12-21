@@ -2,10 +2,9 @@
   "name": "rouge.js",
   "version": "0.3.8",
   "description": "Javascript library for interacting with the Rouge protocol",
-  "main": "dist/cjs/index.js",
-  "browser": "dist/umd/rouge.js",
-  "module": "dist/es/index.js",
-  "jsxnext:main": "dist/es/index.js",
+  "main": "dist/rouge.cjs.js",
+  "module": "dist/rouge.esm.js",
+  "browser": "dist/rouge.umd.js",
   "files": [
     "dist",
     "src"
@@ -42,11 +41,8 @@
     "test:watch": "clear && jest --watch",
     "test:create": "jest --testPathIgnorePatterns='[]' -- __tests__/create.js",
     "lint:test": "yarn run lint && yarn run test:coverage",
-    "build": "yarn run lint:test && yarn run build:cjs && yarn run build:es",
-    "build:watch": "clear && rimraf dist/cjs && cross-env BABEL_ENV=cjs babel -w src --out-dir dist/cjs",
-    "build:es": "rimraf dist/es && cross-env BABEL_ENV=es babel src --out-dir dist/es",
-    "build:cjs": "rimraf dist/cjs && cross-env BABEL_ENV=cjs babel src --out-dir dist/cjs",
-    "build:umd": "rimraf dist/umd && cross-env BABEL_ENV=es rollup -c & cross-env BABEL_ENV=es NODE_ENV=production rollup -c"
+    "build": "yarn run lint:test && yarn run build:rollup",
+    "build:rollup": "rimraf dist/ && rollup -c"
   },
   "release-it": {
     "github": {
@@ -92,15 +88,18 @@
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-bundle-size": "^1.0.2",
     "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-ignore": "^1.0.5",
     "rollup-plugin-json": "^4.0.0",
     "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-uglify": "^6.0.4"
+    "web3": "^1.2.4"
+  },
+  "peerDependencies": {
+    "web3": "1.2.x"
   },
   "dependencies": {
+    "elliptic": "^6.5.2",
     "hex64": "^0.4.0",
-    "rouge-protocol-solidity": "0.20.0",
-    "web3": "^1.2.4"
+    "js-sha3": "^0.8.0",
+    "rouge-protocol-solidity": "0.20.0"
   },
   "husky": {
     "hooks": {

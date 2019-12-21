@@ -1,6 +1,5 @@
 
-import { authHash, authHashProtocolSig, authHashRpcSig, rougeQR, decodeRougeQR } from './authUtils'
-
+import RougeUtils from './utils'
 import RougeProtocol from './rouge'
 
-export { RougeProtocol, authHash, authHashProtocolSig, authHashRpcSig, rougeQR, decodeRougeQR }
+export { RougeUtils, RougeProtocol }

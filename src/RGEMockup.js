@@ -1,8 +1,8 @@
 
-import { transact } from '../src/utils'
+import { transact } from '../src/internalUtils'
 
-const RGEToken = require('rouge-protocol-solidity/build/contracts/TestRGEToken.json')
-const RougeFactory = require('rouge-protocol-solidity/build/contracts/RougeFactory.json')
+import RGEToken from 'rouge-protocol-solidity/build/contracts/TestRGEToken.json'
+import RougeFactory from 'rouge-protocol-solidity/build/contracts/RougeFactory.json'
 
 const defaultTare = 100000
 const globalOptions = {
