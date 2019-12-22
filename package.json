@@ -4,7 +4,6 @@
   "description": "Javascript library for interacting with the Rouge protocol",
   "main": "dist/rouge.cjs.js",
   "module": "dist/rouge.esm.js",
-  "browser": "dist/rouge.umd.js",
   "files": [
     "dist",
     "src"
@@ -90,6 +89,7 @@
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-json": "^4.0.0",
     "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^5.1.3",
     "web3": "^1.2.4"
   },
   "peerDependencies": {

@@ -3,21 +3,22 @@ import commonjs from 'rollup-plugin-commonjs';
 import pkg from './package.json';
 import json from 'rollup-plugin-json';
 import size from 'rollup-plugin-bundle-size';
+import { terser } from 'rollup-plugin-terser';
 
 export default [
 	// browser-friendly UMD build
 	{
 		input: 'src/index.js',
 		output: {
-			name: 'rouge.js',
-			file: pkg.browser,
-			format: 'umd'
+		  name: 'rouge.js',
+		  file: 'dist/rouge.umd.min.js',
+		  format: 'umd'
 		},
 		plugins: [
           json(),
 		  resolve(),
 		  commonjs(),
-          size()
+          terser()
 		]
 	},
 
