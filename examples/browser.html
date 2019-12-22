@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width,initial-scale=1'>
+    <title>Test Rouge browser umd bundle</title>
+    <script src="https://unpkg.com/web3@1.2.2/dist/web3.min.js"></script>
+    <script src="https://unpkg.com/rouge.js@0.4.0-1/dist/rouge.umd.js"></script>
+  </head>
+  <body>
+    <h1>Test Web3.js + rouge.js</h1>
+    <main id="log">
+    </main>
+    <script>
+      function log (msg) {
+        document.getElementById('log').innerHTML =
+          document.getElementById('log').innerHTML + `<p>${msg}</p>`;
+      }
+      window.addEventListener('load', function () {
+        const { RougeUtils, RougeProtocol } = rouge.js
+
+        const web3 = new Web3('https://sokol.poa.network')
+        log('Web3 loaded...');
+
+        const utils = RougeProtocol(Web3).util$
+        log('RougeUtils loaded...');
+
+        const bearer = '0x955d20aedce1227941b12fa27aa1c77af758e10c'
+        const result = utils.authHash('test', '0x0000000000000000000000000000000000000000', bearer)
+        log(`RougeUtils.authHash() = ${result}`);
+
+      })
+    </script>
+  </body>
+</html>
+
