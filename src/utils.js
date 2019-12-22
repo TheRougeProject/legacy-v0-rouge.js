@@ -1,6 +1,10 @@
 
-import Elliptic from 'elliptic'
 import hex64 from 'hex64'
+
+// web3-eth-accounts also depends on elliptic
+// RougeUtils depends directly on it to avoid dependencies outside of web3-utils
+
+import Elliptic from 'elliptic'
 
 import * as bytes from './bytes'
 
