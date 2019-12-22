@@ -98,7 +98,6 @@
   "dependencies": {
     "elliptic": "^6.5.2",
     "hex64": "^0.4.0",
-    "js-sha3": "^0.8.0",
     "rouge-protocol-solidity": "0.20.0"
   },
   "husky": {

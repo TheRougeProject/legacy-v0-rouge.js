@@ -6,6 +6,8 @@ import SimpleRougeCampaign from 'rouge-protocol-solidity/build/contracts/SimpleR
 import { RougeProtocolAddress, RougeAuthorization } from './constants'
 import { universalAccount, universalScheme, sendTransaction, transact, successfulTransact } from './internalUtils'
 
+import RougeUtils from './utils'
+
 import Campaign from './campaign'
 
 const defaultPromiEventCallback = (eventName, e) => {
@@ -31,14 +33,19 @@ const defaultContext = {
 function RougeProtocol (web3, context = {}) {
   context = { ...defaultContext, ...context }
 
-  /* TODO better check valid web3 */
   if (!web3) {
-    throw new Error('rouge.js: missing valid web3 instance to initiate')
+    throw new Error('RougeProtocol: please provide Web3.js context to initiate')
   }
+
+  if (web3.fromWei && web3.fromWei) {
+    web3 = { version: '1.utilsOnly', utils: web3 }
+  }
+
   if (!/^1./.test(web3.version)) {
     throw new Error('rouge.js: can only be used with web3js 1.x')
   }
 
+  const _utils = () => RougeUtils(web3.utils)
   const _transact = (...args) => transact(web3, context, ...args)
 
   const RGE$address = async () => (context.rge || RougeProtocolAddress[await web3.eth.net.getId()].rge)
@@ -74,7 +81,7 @@ function RougeProtocol (web3, context = {}) {
     // TODO check event SetFactory(address indexed _rge, uint256 _tare) => store first block active factory
   }
 
-  control()
+  if (web3.net) control()
 
   const _AbiEvents = {}
   RougeFactory.abi.reduce((acc, d) => {
@@ -163,6 +170,7 @@ function RougeProtocol (web3, context = {}) {
   }
 
   const $ = {
+    get util$ () { return _utils() },
     // get options$$ () { return context.options },
     // protocol object with properties (non Promise & end with $) // no blockchain mutation & no pipe
     get AUTH$ () { return RougeAuthorization },

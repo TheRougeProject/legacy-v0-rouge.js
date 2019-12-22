@@ -2,10 +2,13 @@
 /* global describe:true test:true expect: true */
 /* eslint-disable max-len */
 
-import { RougeUtils } from '../src/index'
-import Web3 from 'web3'
+import { RougeProtocol } from '../src/index'
 
-const utils = RougeUtils(Web3)
+// import Web3 from 'web3'
+// const utils = RougeProtocol(Web3).util$
+
+import Web3Utils from 'web3-utils'
+const utils = RougeProtocol(Web3Utils).util$
 
 const bearer = '0x955d20aedce1227941b12fa27aa1c77af758e10c'
 const bearerPkey = '0xc81c5128f1051be82c1896906cb1e283e07ec99e8ff53c5d02ea78cf5e7cc790'
