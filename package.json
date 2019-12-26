@@ -30,9 +30,7 @@
     "release": "release-it",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
     "cli": "NODE_ENV=test nodemon --exec babel-node src/cli.js",
-    "example": "NODE_ENV=test babel-node examples/simple.js",
-    "example-list": "NODE_ENV=test babel-node examples/simple.js",
-    "example2": "NODE_ENV=test babel-node examples/basic.js",
+    "example-node": "NODE_ENV=test babel-node examples/node.js",
     "lint": "yarn run lint:eslint",
     "lint:eslint": "eslint src/*.js test/*.js",
     "test": "jest --verbose",
@@ -92,7 +90,8 @@
     "web3": "^1.2.2"
   },
   "peerDependencies": {
-    "web3": "1.2.x"
+    "web3-eth": "1.2.x",
+    "web3-utils": "1.2.x"
   },
   "dependencies": {
     "elliptic": "^6.5.2",
