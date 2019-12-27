@@ -45,20 +45,22 @@ or [yarn](https://github.com/yarnpkg/yarn)
 
 ## CDN
 
-https://cdn.jsdelivr.net/npm/rouge.js@next/dist/rouge.umd.min.js
-
 If you don't use a package manager, you can access `rouge.js` via
 [jsDelivr](https://cdn.jsdelivr.net/npm/rouge.js/) or
 [unpkg](https://unpkg.com/rouge.js/), download the source, or point
 your package manager to the url.
 
-The `rouge.js` package includes a precompiled
-[UMD](https://github.com/umdjs/umd) build in the [`dist/`folder](https://unpkg.com/rouge.js@next/dist/rouge.umd.min.js). It can be used
-directly without a bundler and is thus compatible with many popular
-JavaScript module loaders and environments. You can drop a UMD build
-as a [`<script>` tag](https://unpkg.com/rouge.js@next/dist/rouge.umd.min.js) on your page. The UMD
+The `rouge.js` package includes a precompiled and minified
+[UMD](https://github.com/umdjs/umd) build in the
+[`dist/`folder](dist/).  It can be used directly without a bundler and
+is thus compatible with many popular JavaScript module loaders and
+environments. You can drop a UMD build as a [`<script>`
+tag](https://cdn.jsdelivr.net/npm/rouge.js) on your page. The UMD
 builds make `rouge.js` available as a `window.Rouge` global variable.
 
+Direct minified UMD url:
+* jsDelivr: [https://cdn.jsdelivr.net/npm/rouge.js](https://cdn.jsdelivr.net/npm/rouge.js)
+* or unpkg: [https://unpkg.com/rouge.js/dist/rouge.umd.min.js](https://unpkg.com/rouge.js/dist/rouge.umd.min.js)
 
 ## Usage
 
@@ -89,7 +91,7 @@ npm run example-node
 
 ```
 
-### Browser
+### Browser/UMD
 
 Open the file [`examples/browser.html`](examples/browser.html) with your preferred browser.
 
