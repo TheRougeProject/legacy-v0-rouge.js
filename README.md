@@ -43,6 +43,22 @@ or [yarn](https://github.com/yarnpkg/yarn)
 `rouge.js` depends on two modules (`web3-eth` and `web3-utils`) of the
 [web3.js](https://web3js.readthedocs.io/en/v1.2.4/) library.
 
+## CDN
+
+https://cdn.jsdelivr.net/npm/rouge.js@next/dist/rouge.umd.min.js
+
+If you don't use a package manager, you can access `rouge.js` via
+[jsDelivr](https://cdn.jsdelivr.net/npm/rouge.js/) or
+[unpkg](https://unpkg.com/rouge.js/), download the source, or point
+your package manager to the url.
+
+The `rouge.js` package includes a precompiled
+[UMD](https://github.com/umdjs/umd) build in the [`dist/`folder](https://unpkg.com/rouge.js@next/dist/rouge.umd.min.js). It can be used
+directly without a bundler and is thus compatible with many popular
+JavaScript module loaders and environments. You can drop a UMD build
+as a [`<script>` tag](https://unpkg.com/rouge.js@next/dist/rouge.umd.min.js) on your page. The UMD
+builds make `rouge.js` available as a `window.Rouge` global variable.
+
 
 ## Usage
 
@@ -61,17 +77,6 @@ const campaign = rouge.as(myAccount).createCampaign()
 ```
 
 [Online full documentation](https://rouge.network/).
-
-## CDN
-
-If you don't use a package manager, you can [access `rouge.js` via unpkg (CDN)](https://unpkg.com/rouge.js/), download the source, or point your package manager to the url.
-
-The `rouge.js` package includes a precompiled
-[UMD](https://github.com/umdjs/umd) build in the [`dist/`folder](https://unpkg.com/rouge.js@next/dist/rouge.umd.min.js). It can be used
-directly without a bundler and are thus compatible with many popular
-JavaScript module loaders and environments. You can drop a UMD build
-as a [`<script>` tag](https://unpkg.com/rouge.js@next/dist/rouge.umd.min.js) on your page. The UMD
-builds make `rouge.js` available as a `window.Rouge` global variable.
 
 ## Examples
 

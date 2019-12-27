@@ -18,13 +18,13 @@
           document.getElementById('log').innerHTML + `<p>${msg}</p>`
       }
       window.addEventListener('load', function () {
+        const web3 = new Web3('https://sokol.poa.network')
+        log('Web3 initialized...')
+
         const { RougeUtils, RougeProtocol } = Rouge
 
-        const web3 = new Web3('https://sokol.poa.network')
-        log('Web3 loaded...')
-
         const utils = RougeProtocol(Web3).util$
-        log('RougeUtils loaded...')
+        log('RougeUtils initialized...')
 
         const bearer = '0x955d20aedce1227941b12fa27aa1c77af758e10c'
         const result = utils.authHash('test', '0x0000000000000000000000000000000000000000', bearer)

@@ -4,9 +4,11 @@
   "description": "Javascript library for interacting with the Rouge protocol",
   "main": "dist/rouge.cjs.js",
   "module": "dist/rouge.esm.js",
+  "jsdelivr": "dist/rouge.umd.min.js",
   "files": [
     "dist",
-    "src"
+    "src",
+    "examples"
   ],
   "engines": {
     "node": ">=10.0.0"
