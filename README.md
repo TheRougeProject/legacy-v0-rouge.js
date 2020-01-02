@@ -43,6 +43,10 @@ or [yarn](https://github.com/yarnpkg/yarn)
 `rouge.js` depends on two modules (`web3-eth` and `web3-utils`) of the
 [web3.js](https://web3js.readthedocs.io/en/v1.2.4/) library.
 
+## Bundlers help
+
+`rouge.js` is compiled as a collection of [CommonJS](http://webpack.github.io/docs/commonjs.html) modules & [ES2015 modules](http://www.2ality.com/2014/0-9/es6-modules-final.html) for bundlers that support the `module` field in package.json (Rollup, Webpack 2).
+
 ## CDN
 
 If you don't use a package manager, you can access `rouge.js` via
@@ -52,9 +56,10 @@ your package manager to the url.
 
 The `rouge.js` package includes a precompiled and minified
 [UMD](https://github.com/umdjs/umd) build in the
-[`dist/`folder](dist/).  It can be used directly without a bundler and
-is thus compatible with many popular JavaScript module loaders and
-environments. You can drop a UMD build as a [`<script>`
+[`dist/`folder](https://cdn.jsdelivr.net/npm/rouge.js/dist/).
+It can be used directly without a bundler and is thus compatible with
+many popular JavaScript module loaders and environments. You can drop
+a UMD build as a [`<script>`
 tag](https://cdn.jsdelivr.net/npm/rouge.js) on your page. The UMD
 builds make `rouge.js` available as a `window.Rouge` global variable.
 
@@ -88,20 +93,13 @@ See files in the [`examples`](examples/) folder.
 
 ```bash
 npm run example-node
-
 ```
 
 ### Browser/UMD
 
 Open the file [`examples/browser.html`](examples/browser.html) with your preferred browser.
 
-<!--
 
-### TODO Bundlers help
-
-`rouge` is compiled as a collection of [CommonJS](http://webpack.github.io/docs/commonjs.html) modules & [ES2015 modules](http://www.2ality.com/2014/0
-  -9/es6-modules-final.html) for bundlers that support the `jsnext:main` or `module` field in package.json (Rollup, Webpack 2)
--->
 
 ## Contributing
 

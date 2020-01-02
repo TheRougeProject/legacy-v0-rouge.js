@@ -64,11 +64,8 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
   const addAttestor = async ({attestor, auths}) => {
     try {
       attestor = universalAccount(web3, attestor)
-      // XXX check syntax attestor + auths
       const method = instance.methods.addAttestor(attestor.address, auths)
-      // const receipt = await _transact(method, address, 46842)
       const receipt = await _transact(method, address)
-
       if (!successfulTransact(receipt)) throw new Error('tx not successful')
       return Promise.resolve(true)
     } catch (e) {
@@ -79,13 +76,7 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
   const removeAttestor = async ({attestor, auths}) => {
     try {
       attestor = universalAccount(web3, attestor)
-      // XXX check syntax attestor + auths
       const method = instance.methods.removeAttestor(attestor.address, auths)
-      // ! BUG in web3 1.0 (instance.abiModel.abi.methods.addAttestor) doesn't include Array
-      // const encoded = '0x' + abi.simpleEncode(
-      //   'addAttestor(address,uint8[])', attestor.address, auths
-      // ).toString('hex')
-
       const receipt = await _transact(method, address)
       if (!successfulTransact(receipt)) throw new Error('tx not successful')
       return Promise.resolve(true)

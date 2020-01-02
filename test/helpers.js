@@ -7,11 +7,10 @@ import { sendTestRGE, generateRgeMockup } from '../src/RGEMockup'
 
 const ganache = require('ganache-core')
 
-export const initializeWeb3 = () => {
+export const initializeWeb3 = options => {
 
   const web3 = new Web3()
-
-  return ganacheSetup(web3)
+  return ganacheSetup(web3, options)
 
 }
 
@@ -30,14 +29,13 @@ export const poaSetup = async web3 => {
   return { issuerPkey, issuerAccount, campaign }
 }
 
-const ganacheSetup = async web3 => {
+const ganacheSetup = async (web3, options) => {
 
   try {
 
-    web3.setProvider(ganache.provider())
+    web3.setProvider(ganache.provider(options))
 
     const [rgeOwner, ...accounts] = await web3.eth.getAccounts()
-
     const mockup = await generateRgeMockup(web3, rgeOwner)
 
     // give 10 RGE to every accounts

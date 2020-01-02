@@ -2,11 +2,12 @@
 /* global beforeAll:true describe:true test:true expect:true */
 
 import { RougeProtocol } from '../src/index'
+import { RougeAuthorization } from '../src/constants'
 
 import { initializeWeb3 } from './helpers.js'
 
 let mockup
-beforeAll(async () => { mockup = await initializeWeb3() })
+beforeAll(async () => { mockup = await initializeWeb3({ total_accounts: 37 }) })
 
 const campaignCreationTestDefaulParams = {
   name: 'Jest __tests__ campaign',
@@ -29,36 +30,34 @@ describe('RougeProtocol(web3).createCampaign()', () => {
     await expect(campaignPromise).resolves.toHaveProperty('canKill')
   })
 
-  describe('campaign.addAttestor(AUTH$.Acquisition), then canDistribute', () => {
-    const expected = true
-    test(
-      `should return ${JSON.stringify(expected)}`,
-      async () => (await campaignPromise).addAttestor({
-        attestor: mockup.accounts[1],
-        auths: [rouge.AUTH$.Acquisition]
-      }).then(
-        async result => {
-          expect(result).toEqual(true)
-          return expect((await campaignPromise).as(mockup.accounts[1]).canDistribute).resolves.toEqual(expected)
-        }
-      )
-    )
-  })
+  const expected = {
+    canAttach: auth => !!['All', 'Attachment'].includes(auth),
+    canIssue: auth => !!['All', 'Issuance'].includes(auth),
+    canDistribute: auth => !!['All', 'Acquisition'].includes(auth),
+    canSignRedemption: auth => !!['All', 'Redemption'].includes(auth),
+    canKill: auth => !!['All', 'Kill'].includes(auth)
+  }
 
-  describe('campaign.addAttestor(AUTH$.Redemption), then canIssue', () => {
-    const expected = false
-    test(
-      `should return ${JSON.stringify(expected)}`,
-      async () => (await campaignPromise).as(mockup.accounts[0]).addAttestor({
-        attestor: mockup.accounts[2],
-        auths: [rouge.AUTH$.Redemption]
-      }).then(
-        async result => {
-          expect(result).toEqual(true)
-          return expect((await campaignPromise).as(mockup.accounts[2]).canIssue).resolves.toEqual(expected)
-        }
-      )
-    )
+  Object.keys(expected).forEach((call, i) => {
+
+    describe(`campaign.addAttestor(AUTH$), then ${call}`, () => {
+      Object.keys(RougeAuthorization).forEach(auth => {
+        const getAttestor = () => mockup.accounts[RougeAuthorization[auth] + 1 + i * 7]
+        test(
+          `should return ${JSON.stringify(expected[call](auth))} if AUTH$ = ${auth}`,
+          async () => (await campaignPromise).as(mockup.accounts[0]).addAttestor({
+            attestor: getAttestor(),
+            auths: [RougeAuthorization[auth]]
+          }).then(
+            async result => {
+              expect(result).toEqual(true)
+              return expect((await campaignPromise).as(getAttestor())[call]).resolves.toEqual(expected[call](auth))
+            }
+          )
+        )
+      })
+    })
+
   })
 
 })
