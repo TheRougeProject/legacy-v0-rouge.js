@@ -45,7 +45,7 @@ or [yarn](https://github.com/yarnpkg/yarn)
 
 ## Bundlers help
 
-`rouge.js` is compiled as a collection of [CommonJS](http://webpack.github.io/docs/commonjs.html) modules & [ES2015 modules](http://www.2ality.com/2014/0-9/es6-modules-final.html) for bundlers that support the `module` field in package.json (Rollup, Webpack 2).
+`rouge.js` is compiled as a collection of [CommonJS](http://webpack.github.io/docs/commonjs.html) modules & [ES2015 modules](https://2ality.com/2014/09/es6-modules-final.html) for bundlers that support the `module` field in package.json (Rollup, Webpack 2).
 
 ## CDN
 
