@@ -1,10 +1,12 @@
 
-/* global beforeAll:true describe:true test:true expect:true */
+/* global jest:true beforeAll:true describe:true test:true expect:true */
 
 import { RougeProtocol } from '../src/index'
 import { RougeAuthorization } from '../src/constants'
 
 import { initializeWeb3 } from './helpers.js'
+
+jest.setTimeout(8 * 1000)
 
 let mockup
 beforeAll(async () => { mockup = await initializeWeb3({ total_accounts: 37 }) })
