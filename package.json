@@ -1,6 +1,6 @@
 {
   "name": "rouge.js",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "description": "Javascript library for interacting with the Rouge protocol",
   "main": "dist/rouge.cjs.js",
   "module": "dist/rouge.esm.js",
