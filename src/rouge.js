@@ -123,14 +123,12 @@ function RougeProtocol (web3, context = {}) {
       const NewCampaign = _decodeLog('NewCampaign', receipt.logs[3])
       // console.log('NewCampaign', NewCampaign)
 
-      if (!successfulTransact(receipt)) Promise.reject(new Error(`[rouge.js] createCampaign tx failed`))
+      if (!successfulTransact(receipt)) throw new Error('tx failed')
 
       const campaign = campaign$(NewCampaign.campaign)
-      await campaign.issue({ scheme, ...args })
-
-      return Promise.resolve(campaign)
+      return await campaign.issue({ scheme, ...args })
     } catch (e) {
-      return Promise.reject(new Error(`[rouge.js] createCampaign failed: ${e}`))
+      throw new Error(`[rouge.js] createCampaign failed: ${e}`)
     }
   }
 

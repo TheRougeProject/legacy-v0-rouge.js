@@ -112,13 +112,12 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
       }
 
       const receipt = await _transact(method, address)
+      // const Issuance = _decodeLog('Issuance', receipt.logs[0])
+      // console.log("Issuance", receipt)
 
-      // const Issuance = _decodeLog('Issuance', receipt2.logs[0])
-      // console.log("Issuance", Issuance)
-
-      return Promise.resolve(receipt)
+      return receipt
     } catch (e) {
-      return Promise.reject(new Error(`[rouge.js] issueCampaign failed: ${e}`))
+      throw new Error(`[rouge.js] issueCampaign failed: ${e}`)
     }
   }
 
