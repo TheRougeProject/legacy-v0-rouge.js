@@ -3,6 +3,7 @@ import commonjs from 'rollup-plugin-commonjs';
 import pkg from './package.json';
 import json from 'rollup-plugin-json';
 import { terser } from 'rollup-plugin-terser';
+import replace from '@rollup/plugin-replace';
 
 export default [
 	// browser-friendly UMD build
@@ -15,6 +16,7 @@ export default [
 		},
 		plugins: [
           json(),
+          replace({ __version__: process.env.VERSION }),
 		  resolve(),
 		  commonjs(),
           terser()
@@ -27,6 +29,7 @@ export default [
 		external: ['ms'],
 		plugins: [
           json(),
+          replace({ __version__: process.env.VERSION }),
 		],
 		output: [
 			{ file: pkg.main, format: 'cjs' },

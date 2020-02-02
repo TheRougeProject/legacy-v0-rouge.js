@@ -212,6 +212,7 @@ function RougeProtocol (web3, context = {}) {
     return $
   }
 
+  $.version = '__version__'
   return Object.freeze($).as(context.as)
 }
 

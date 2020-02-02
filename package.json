@@ -40,7 +40,7 @@
     "test:create": "jest --testPathIgnorePatterns='[]' -- __tests__/create.js",
     "lint:test": "yarn run lint && yarn run test:coverage",
     "build": "yarn run lint:test && yarn run build:rollup",
-    "build:rollup": "rimraf dist/ && rollup -c"
+    "build:rollup": "rimraf dist/ && cross-env VERSION=$npm_package_version rollup -c"
   },
   "release-it": {
     "github": {
@@ -63,11 +63,12 @@
     "@babel/core": "^7.8.4",
     "@babel/node": "^7.8.4",
     "@babel/preset-env": "^7.8.4",
+    "@rollup/plugin-replace": "^2.3.1",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^24.9.0",
     "babel-plugin-relative-path-import": "^2.0.1",
     "coveralls": "^3.0.9",
-    "cross-env": "^5.2.1",
+    "cross-env": "^7.0.0",
     "eslint": "^6.8.0",
     "eslint-config-standard": "^13.0.1",
     "eslint-plugin-babel": "^5.3.0",
@@ -88,7 +89,7 @@
     "rollup-plugin-json": "^4.0.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-terser": "^5.2.0",
-    "web3": "^1.2.5"
+    "web3": "^1.2.6"
   },
   "peerDependencies": {
     "web3-eth": "1.2.x",

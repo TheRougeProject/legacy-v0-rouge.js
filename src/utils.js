@@ -128,7 +128,7 @@ const RougeUtils = web3Utils => {
   }
 
   return Object.freeze({
-    authHash, authHashProtocolSig, authHashRpcSig, rougeQR, decodeRougeQR
+    version: '__version__', authHash, authHashProtocolSig, authHashRpcSig, rougeQR, decodeRougeQR
   })
 }
 
