@@ -16,11 +16,21 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
   const tare = async () => instance.methods.tare().call()
 
   // TODO cache information from getInfo
-  const info = async () => instance.methods.getInfo().call()
+  const infoRaw = async () => instance.methods.getInfo().call()
   const issuer = async () => instance.methods.issuer().call()
   const scheme = async () => instance.methods.scheme().call()
   const expiration = async () => instance.methods.campaignExpiration().call()
   const name = async () => instance.methods.name().call()
+
+  const info = async () => {
+    const data = await infoRaw()
+    return {
+      issuer: web3.utils.toChecksumAddress(data.slice(0, 42)),
+      scheme: '0x' + data.slice(42, 50),
+      expiration: web3.utils.hexToNumber('0x' + data.slice(50, 114)),
+      name: web3.utils.hexToAscii('0x' + data.slice(114))
+    }
+  }
 
   const state = async () => instance.methods.getState().call()
   const isIssued = async () => instance.methods.campaignIssued().call()
@@ -113,7 +123,7 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
 
       const receipt = await _transact(method, address)
       // const Issuance = _decodeLog('Issuance', receipt.logs[0])
-      // console.log("Issuance", receipt)
+      console.log('receipt', receipt)
 
       return receipt
     } catch (e) {

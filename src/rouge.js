@@ -93,7 +93,12 @@ function RougeProtocol (web3, context = {}) {
     return acc
   }, _AbiEvents)
 
-  const _decodeLog = (name, log) => web3.eth.abi.decodeLog(_AbiEvents[name].inputs, log.data, log.topics.slice(1))
+  const _decodeLog = (name, log) => ({
+    _event: name,
+    _address: log.address,
+    _log: log,
+    ...web3.eth.abi.decodeLog(_AbiEvents[name].inputs, log.data, log.topics.slice(1))
+  })
 
   const account$ = () => Object.freeze({
     get address () { return context.as.address }
@@ -132,23 +137,25 @@ function RougeProtocol (web3, context = {}) {
     }
   }
 
-  const getCampaignList = async ({scheme, issuer}) => {
+  // const getCampaignList = async ({issuer}) => {
+  // // NewCampaign TODO add in protocol issuer + version protocol
+
+  // event Issuance(bytes4 indexed scheme, string name, uint campaignExpiration);
+  // TODO add in protocol issuer + version protocol
+  const getIssuedCampaignList = async ({scheme, issuer}) => {
     try {
-      // const logs = await web3.eth.getPastLogs({
-      //   address: factoryAddress,
-      //   // event NewCampaign(address indexed issuer, address indexed campaign, uint32 issuance)
-      //   topics: ['0x798fca4db5588d669d44c689c1949dc5566b003ef1d73792336bb11e46143085']
-      // })
-      // scheme should be in topics.
+      const abiSignEvent = web3.eth.abi.encodeEventSignature(_AbiEvents['Issuance'])
+      const encodedScheme = web3.utils.padRight(scheme, 64)
+      console.log('xxx', abiSignEvent, encodedScheme)
       const logs = await web3.eth.getPastLogs({
         fromBlock: 4056827, // should be factory/version create block by default
-        // address: factoryAddress,
-        // event Issuance(bytes4 scheme, string name, uint campaignExpiration) => add issuer + version
-        topics: ['0x61d7bd1b44357bca3ed4bd238fec71f1710af7c589ab829be7f3be96caa6c5eb']
+        // fromBlock: 4056827, // should be factory/version create block by default
+        topics: [abiSignEvent, encodedScheme]
       })
-      return Promise.resolve(logs.map(log => log.address))
+
+      return Promise.resolve(logs.map(log => _decodeLog('Issuance', log)))
     } catch (e) {
-      return Promise.reject(new Error(`[rouge.js] getCampaignList failed: ${e}`))
+      return Promise.reject(new Error(`[rouge.js] getIssuedCampaignList failed: ${e}`))
     }
   }
 
@@ -178,7 +185,8 @@ function RougeProtocol (web3, context = {}) {
     campaign$,
     // verb => potential mutation, always return Promise, pipe always end
     createCampaign,
-    getCampaignList,
+    // getCampaignList,
+    getIssuedCampaignList,
     sendFinney
   }
 
