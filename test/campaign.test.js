@@ -15,7 +15,7 @@ beforeAll(async () => { mockup = await initializeWeb3() })
 const defaultTare = '100000'
 const campaignCreationTestDefaulParams = {
   name: 'Jest __tests__ campaign',
-  issuance: '2'
+  issuance: 3
 }
 
 describe('RougeProtocol(web3).createCampaign()', () => {
@@ -45,7 +45,7 @@ describe('RougeProtocol(web3).createCampaign()', () => {
   })
 
   describe('issuance * tare RGE tokens have been from issuer to campaign contract', () => {
-    const expected = parseInt(defaultTare) * parseInt(campaignCreationTestDefaulParams.issuance)
+    const expected = parseInt(defaultTare) * campaignCreationTestDefaulParams.issuance
     test(
       `rge.balanceOf(campaign) should return ${expected}`,
       () => campaignPromise.then(
@@ -84,12 +84,16 @@ describe('RougeProtocol(web3).createCampaign()', () => {
   })
 
   describe('campaign.info()', () => {
-    const expected = '0001ffff00000000000000000000000000000000000000000000000000000000'
+    const expected = a => ({
+      issuer: a,
+      name: 'Jest __tests__ campaign',
+      scheme: '0x0001ffff'
+    })
     test(
-      `should return a string containing issuer+${expected}`,
+      `should return an object containing ${JSON.stringify(expected)}`,
       () => campaignPromise.then(
         async campaign => expect(await campaign.info).toEqual(
-          expect.stringContaining(mockup.accounts[0].toLowerCase() + expected)
+          expect.objectContaining(expected(mockup.accounts[0]))
         )
       )
     )
@@ -135,9 +139,13 @@ describe('RougeProtocol(web3).createCampaign()', () => {
   })
 
   describe('campaign.state()', () => {
-    const expected =
-          '0x0000000' + campaignCreationTestDefaulParams.issuance +
-          '010000000' + campaignCreationTestDefaulParams.issuance + '0000000000000000'
+    const expected = {
+      acquired: 0,
+      free: campaignCreationTestDefaulParams.issuance,
+      issuance: campaignCreationTestDefaulParams.issuance,
+      issued: true,
+      redeemed: 0
+    }
     test(
       `should return ${JSON.stringify(expected)}`,
       () => campaignPromise.then(
@@ -147,7 +155,7 @@ describe('RougeProtocol(web3).createCampaign()', () => {
   })
 
   describe('campaign.issuance()', () => {
-    const expected = campaignCreationTestDefaulParams.issuance
+    const expected = campaignCreationTestDefaulParams.issuance.toString()
     test(
       `should return ${JSON.stringify(expected)}`,
       () => campaignPromise.then(
@@ -167,7 +175,7 @@ describe('RougeProtocol(web3).createCampaign()', () => {
   })
 
   describe('campaign.available()', () => {
-    const expected = campaignCreationTestDefaulParams.issuance
+    const expected = campaignCreationTestDefaulParams.issuance.toString()
     test(
       `should return ${JSON.stringify(expected)}`,
       () => campaignPromise.then(

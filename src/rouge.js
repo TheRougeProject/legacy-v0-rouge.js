@@ -96,6 +96,8 @@ function RougeProtocol (web3, context = {}) {
   const _decodeLog = (name, log) => ({
     _event: name,
     _address: log.address,
+    _blockNumber: log.blockNumber,
+    _transactionHash: log.transactionHash,
     _log: log,
     ...web3.eth.abi.decodeLog(_AbiEvents[name].inputs, log.data, log.topics.slice(1))
   })
@@ -139,20 +141,16 @@ function RougeProtocol (web3, context = {}) {
 
   // const getCampaignList = async ({issuer}) => {
   // // NewCampaign TODO add in protocol issuer + version protocol
-
-  // event Issuance(bytes4 indexed scheme, string name, uint campaignExpiration);
   // TODO add in protocol issuer + version protocol
   const getIssuedCampaignList = async ({scheme, issuer}) => {
+    // TODO issuer // protocol version filter
     try {
       const abiSignEvent = web3.eth.abi.encodeEventSignature(_AbiEvents['Issuance'])
       const encodedScheme = web3.utils.padRight(scheme, 64)
-      console.log('xxx', abiSignEvent, encodedScheme)
       const logs = await web3.eth.getPastLogs({
-        fromBlock: 4056827, // should be factory/version create block by default
-        // fromBlock: 4056827, // should be factory/version create block by default
+        fromBlock: 1, // 4056827, should be factory/version create block by default per network ?
         topics: [abiSignEvent, encodedScheme]
       })
-
       return Promise.resolve(logs.map(log => _decodeLog('Issuance', log)))
     } catch (e) {
       return Promise.reject(new Error(`[rouge.js] getIssuedCampaignList failed: ${e}`))

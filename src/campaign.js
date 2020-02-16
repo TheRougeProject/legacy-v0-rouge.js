@@ -32,12 +32,26 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
     }
   }
 
-  const state = async () => instance.methods.getState().call()
+  const stateRaw = async () => instance.methods.getState().call()
   const isIssued = async () => instance.methods.campaignIssued().call()
   const issuance = async () => instance.methods.issuance().call()
   const available = async () => instance.methods.available().call()
   const acquired = async () => instance.methods.acquired().call()
   const redeemed = async () => instance.methods.redeemed().call()
+
+  const state = async () => {
+    const data = await stateRaw()
+    const result = {
+      issued: web3.utils.hexToNumber('0x' + data.slice(10, 12)) > 0
+    }
+    if (result.issued) {
+      result.issuance = web3.utils.hexToNumber(data.slice(0, 10))
+      result.free = web3.utils.hexToNumber('0x' + data.slice(12, 20))
+      result.acquired = web3.utils.hexToNumber('0x' + data.slice(20, 28))
+      result.redeemed = web3.utils.hexToNumber('0x' + data.slice(28, 36))
+    }
+    return result
+  }
 
   const _isAuthorized = async (address, auth) => (await instance.methods.isAuthorized(
     address, RougeAuthorization.All
@@ -123,8 +137,6 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
 
       const receipt = await _transact(method, address)
       // const Issuance = _decodeLog('Issuance', receipt.logs[0])
-      console.log('receipt', receipt)
-
       return receipt
     } catch (e) {
       throw new Error(`[rouge.js] issueCampaign failed: ${e}`)
