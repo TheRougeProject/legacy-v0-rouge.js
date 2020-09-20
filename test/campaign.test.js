@@ -37,7 +37,7 @@ describe('RougeProtocol(web3).createCampaign()', () => {
 
   describe('campaign object is not extensible', () => {
     test(
-      `adding attribut to campaign object should Throw`,
+      'adding attribut to campaign object should Throw',
       () => campaignPromise.then(
         campaign => expect(() => { campaign.newAttribut = true }).toThrow()
       )
@@ -101,7 +101,7 @@ describe('RougeProtocol(web3).createCampaign()', () => {
 
   describe('campaign.issuer()', () => {
     test(
-      `should return the issuer address`,
+      'should return the issuer address',
       () => campaignPromise.then(
         async campaign => expect(await campaign.issuer).toEqual(mockup.accounts[0])
       )

@@ -23,7 +23,7 @@ describe('RougeProtocol(web3)', () => {
 
   describe('rouge object is not extensible', () => {
     test(
-      `adding attribut to campaign object should Throw`,
+      'adding attribut to campaign object should Throw',
       () => {
         expect(() => { rouge.newAttribut = true }).toThrow()
       }
