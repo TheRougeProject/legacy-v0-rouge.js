@@ -28,18 +28,18 @@
   "license": "AGPL-3.0-only",
   "repository": "TheRougeProject/rouge.js",
   "scripts": {
-    "prepublish": "yarn run build",
+    "prepublish": "npm run build",
     "release": "release-it",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
     "example-node": "babel-node examples/node.js",
-    "lint": "yarn run lint:eslint",
+    "lint": "npm run lint:eslint",
     "lint:eslint": "eslint src/*.js test/*.js",
     "test": "jest --verbose",
     "test:coverage": "jest --coverage",
     "test:watch": "clear && jest --watch",
     "test:create": "jest --testPathIgnorePatterns='[]' -- __tests__/create.js",
-    "lint:test": "yarn run lint && yarn run test:coverage",
-    "build": "yarn run lint:test && yarn run build:rollup",
+    "lint:test": "npm run lint && npm run test:coverage",
+    "build": "npm run lint:test && npm run build:rollup",
     "build:rollup": "rimraf dist/ && cross-env VERSION=$npm_package_version rollup -c"
   },
   "release-it": {
@@ -59,10 +59,10 @@
     ]
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.8.6",
-    "@babel/node": "^7.8.4",
-    "@babel/preset-env": "^7.8.6",
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/node": "^7.10.5",
+    "@babel/preset-env": "^7.11.5",
     "@rollup/plugin-replace": "^2.3.1",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^24.9.0",
@@ -102,8 +102,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn run lint:test",
-      "pre-push": "yarn run lint:test"
+      "pre-commit": "npm run lint:test",
+      "pre-push": "npm run lint:test"
     }
   }
 }
