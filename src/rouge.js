@@ -3,7 +3,7 @@ import RGEToken from 'rouge-protocol-solidity/build/contracts/RGETokenInterface.
 import RougeFactory from 'rouge-protocol-solidity/build/contracts/RougeFactory.json'
 import SimpleRougeCampaign from 'rouge-protocol-solidity/build/contracts/SimpleRougeCampaign.json'
 
-import { RougeProtocolAddress, RougeAuthorization } from './constants'
+import { NetworkName, RougeProtocolAddress, RougeAuthorization } from './constants'
 import { universalAccount, universalScheme, sendTransaction, transact, successfulTransact } from './internalUtils'
 
 import RougeUtils from './utils'
@@ -74,6 +74,14 @@ function RougeProtocol (web3, context = {}) {
     // get RGEbalance () { return factory$RGEbalance() },
   })
 
+  const status = () => Promise.all([
+    new Promise(resolve => resolve(web3.eth.net.getId().then(id => NetworkName[id]))),
+    RGE$address(),
+    factory$address(),
+    factory$version(),
+    factory$tare()
+  ])
+
   const control = async () => {
     if ((await RGE$address()).toLowerCase() !== (await factory$rgeAddress()).toLowerCase()) {
       throw new Error('RGE protocol not ready: rge address not set in factory')
@@ -139,21 +147,21 @@ function RougeProtocol (web3, context = {}) {
     }
   }
 
-  // const getCampaignList = async ({issuer}) => {
-  // // NewCampaign TODO add in protocol issuer + version protocol
-  // TODO add in protocol issuer + version protocol
-  const getIssuedCampaignList = async ({scheme, issuer}) => {
-    // TODO issuer // protocol version filter
+  // TODO add protocol version ?
+  const getIssuedCampaignList = async ({issuer, scheme}) => {
     try {
       const abiSignEvent = web3.eth.abi.encodeEventSignature(_AbiEvents.Issuance)
       const encodedScheme = web3.utils.padRight(scheme, 64)
       const logs = await web3.eth.getPastLogs({
         fromBlock: 1, // 4056827, should be factory/version create block by default per network ?
-        topics: [abiSignEvent, encodedScheme]
+        topics: [abiSignEvent, null, issuer, scheme]
       })
-      return Promise.resolve(logs.map(log => _decodeLog('Issuance', log)))
+      return logs.map(log => {
+        const tmp = _decodeLog('Issuance', log)
+        return { ...tmp, scheme: tmp.scheme.substring(0, 10), version: tmp.version.substring(0, 6) }
+      })
     } catch (e) {
-      return Promise.reject(new Error(`[rouge.js] getIssuedCampaignList failed: ${e}`))
+      throw new Error(`[rouge.js] getIssuedCampaignList failed: ${e}`)
     }
   }
 
@@ -181,6 +189,7 @@ function RougeProtocol (web3, context = {}) {
     get factory$ () { return factory$ },
     get account$ () { return account$() },
     campaign$,
+    status,
     // verb => potential mutation, always return Promise, pipe always end
     createCampaign,
     // getCampaignList,

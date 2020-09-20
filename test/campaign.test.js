@@ -64,7 +64,7 @@ describe('RougeProtocol(web3).createCampaign()', () => {
   })
 
   describe('campaign.version()', () => {
-    const expected = `${major}.${minor}`
+    const expected = `0x${major.padStart(2, '0')}${minor.padStart(2, '0')}`
     test(
       `should return ${expected}`,
       () => campaignPromise.then(
