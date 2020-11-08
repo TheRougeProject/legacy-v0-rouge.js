@@ -1,3 +1,4 @@
+/* eslint-disable no-var */
 
 export function isHexable (value) {
   return !!(value.toHexString)
