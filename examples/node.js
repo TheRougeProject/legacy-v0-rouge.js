@@ -1,6 +1,11 @@
 
 import Web3 from 'web3'
-import moment from 'moment'
+import dayjs from 'dayjs'
+
+const duration = require('dayjs/plugin/duration')
+const advancedFormat = require('dayjs/plugin/advancedFormat')
+dayjs.extend(advancedFormat)
+dayjs.extend(duration)
 
 import { RougeProtocol } from '../src/index'
 
@@ -23,7 +28,7 @@ const run = async () => {
   const campaign = await rouge.as(issuer).createCampaign({
     name: 'Simple demo Rouge campaign',
     issuance: 10,
-    expiration: moment().add(moment.duration(2, 'days')).format('X')
+    expiration: dayjs().add(dayjs.duration(2, 'days')).format('X')
     // precheck: true
   })
 

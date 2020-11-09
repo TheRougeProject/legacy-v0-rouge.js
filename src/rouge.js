@@ -151,7 +151,7 @@ function RougeProtocol (web3, context = {}) {
   const getIssuedCampaignList = async ({issuer, scheme}) => {
     try {
       const abiSignEvent = web3.eth.abi.encodeEventSignature(_AbiEvents.Issuance)
-      const encodedScheme = web3.utils.padRight(scheme, 64)
+      // const encodedScheme = web3.utils.padRight(scheme, 64)
       const logs = await web3.eth.getPastLogs({
         fromBlock: 1, // 4056827, should be factory/version create block by default per network ?
         topics: [abiSignEvent, null, issuer, scheme]
