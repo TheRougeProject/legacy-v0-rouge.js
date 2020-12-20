@@ -1,6 +1,6 @@
 {
   "name": "rouge.js",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "license": "AGPL-3.0-only",
   "description": "Javascript library for interacting with the Rouge protocol",
   "repository": "TheRougeProject/rouge.js",
