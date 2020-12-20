@@ -1,4 +1,3 @@
-
 import SimpleRougeCampaign from 'rouge-protocol-solidity/build/contracts/SimpleRougeCampaign.json'
 
 import { universalAccount, transact, successfulTransact } from './internalUtils'
@@ -7,7 +6,6 @@ import { RougeAuthorization } from './constants'
 import RougeUtils from './utils'
 
 export default function Campaign (web3, address, { context, _decodeLog }) {
-
   const _transact = (...args) => transact(web3, context, ...args)
 
   const instance = new web3.eth.Contract(SimpleRougeCampaign.abi, address, {})
@@ -53,25 +51,31 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
     return result
   }
 
-  const _isAuthorized = async (address, auth) => (await instance.methods.isAuthorized(
-    address, RougeAuthorization.All
-  ).call()) || instance.methods.isAuthorized(
-    address, auth
-  ).call()
+  const _isAuthorized = async (address, auth) =>
+    (await instance.methods
+      .isAuthorized(address, RougeAuthorization.All)
+      .call()) || instance.methods.isAuthorized(address, auth).call()
 
-  const canAttach = () => _isAuthorized(context.as.address, RougeAuthorization.Attachment)
-  const canIssue = () => _isAuthorized(context.as.address, RougeAuthorization.Issuance)
-  const canDistribute = () => _isAuthorized(context.as.address, RougeAuthorization.Acquisition)
-  const canSignRedemption = () => _isAuthorized(context.as.address, RougeAuthorization.Redemption)
-  const canKill = () => _isAuthorized(context.as.address, RougeAuthorization.Kill)
+  const canAttach = () =>
+    _isAuthorized(context.as.address, RougeAuthorization.Attachment)
+  const canIssue = () =>
+    _isAuthorized(context.as.address, RougeAuthorization.Issuance)
+  const canDistribute = () =>
+    _isAuthorized(context.as.address, RougeAuthorization.Acquisition)
+  const canSignRedemption = () =>
+    _isAuthorized(context.as.address, RougeAuthorization.Redemption)
+  const canKill = () =>
+    _isAuthorized(context.as.address, RougeAuthorization.Kill)
 
-  const hasNote = async bearer => { // TODO cleanup
+  const hasNote = async bearer => {
+    // TODO cleanup
     const res = await instance.methods.hasNote(bearer).call()
     // workaround web1.0
     if (typeof res === 'object' && res.yes) return res.yes
     return res
   }
-  const hasRedeemed = async bearer => { // TODO cleanup
+  const hasRedeemed = async bearer => {
+    // TODO cleanup
     const res = await instance.methods.hasRedeemed(bearer).call()
     // workaround web1.0
     if (typeof res === 'object' && res.yes) return res.yes
@@ -85,7 +89,7 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
     })
   }
 
-  const addAttestor = async ({attestor, auths}) => {
+  const addAttestor = async ({ attestor, auths }) => {
     try {
       attestor = universalAccount(web3, attestor)
       const method = instance.methods.addAttestor(attestor.address, auths)
@@ -97,7 +101,7 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
     }
   }
 
-  const removeAttestor = async ({attestor, auths}) => {
+  const removeAttestor = async ({ attestor, auths }) => {
     try {
       attestor = universalAccount(web3, attestor)
       const method = instance.methods.removeAttestor(attestor.address, auths)
@@ -109,9 +113,12 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
     }
   }
 
-  const attachFuel = async bearer => Promise.reject(new Error('[rouge.js] not implement'))
-  const attachERC20 = async bearer => Promise.reject(new Error('[rouge.js] not implement'))
-  const attachERC721 = async bearer => Promise.reject(new Error('[rouge.js] not implement'))
+  const attachFuel = async bearer =>
+    Promise.reject(new Error('[rouge.js] not implement'))
+  const attachERC20 = async bearer =>
+    Promise.reject(new Error('[rouge.js] not implement'))
+  const attachERC721 = async bearer =>
+    Promise.reject(new Error('[rouge.js] not implement'))
 
   const _issue = async ({
     name = '',
@@ -130,7 +137,13 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
         // encoded = '0x' + abi.simpleEncode(
         //   'issueWithAttestor(bytes4,string,uint,address,uint8[])', scheme, name, expiration, attestor, auths
         // ).toString('hex')
-        method = instance.methods.issueWithAttestor(scheme, name, expiration, attestor, auths)
+        method = instance.methods.issueWithAttestor(
+          scheme,
+          name,
+          expiration,
+          attestor,
+          auths
+        )
       } else {
         method = instance.methods.issue(scheme, name, expiration)
       }
@@ -143,7 +156,8 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
     }
   }
 
-  const issueWithAttestor = async bearer => Promise.reject(new Error('[rouge.js] not implement'))
+  const issueWithAttestor = async bearer =>
+    Promise.reject(new Error('[rouge.js] not implement'))
 
   const distributeNote = async bearer => {
     try {
@@ -161,8 +175,18 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
     try {
       // TODO test attestor != as if (rouge.validationMode)
       // TODO test attestor canDistribute if (rouge.validationMode)
-      const auth = RougeUtils(web3.utils).authHash('acceptAcquisition', address, context.as.address)
-      const method = instance.methods.acquire(auth, signedAuth.v, signedAuth.r, signedAuth.s, attestor)
+      const auth = RougeUtils(web3.utils).authHash(
+        'acceptAcquisition',
+        address,
+        context.as.address
+      )
+      const method = instance.methods.acquire(
+        auth,
+        signedAuth.v,
+        signedAuth.r,
+        signedAuth.s,
+        attestor
+      )
       const receipt = await _transact(method, address)
       if (!successfulTransact(receipt)) throw new Error('tx not successful')
       return Promise.resolve(receipt)
@@ -176,8 +200,18 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
       attestor = universalAccount(web3, attestor)
       // TODO test attestor != as if (rouge.validationMode)
       // TODO test attestor canRedeem if (rouge.validationMode)
-      const auth = RougeUtils(web3.utils).authHash('acceptRedemption', address, context.as.address)
-      const method = instance.methods.redeem(auth, signedAuth.v, signedAuth.r, signedAuth.s, attestor.address)
+      const auth = RougeUtils(web3.utils).authHash(
+        'acceptRedemption',
+        address,
+        context.as.address
+      )
+      const method = instance.methods.redeem(
+        auth,
+        signedAuth.v,
+        signedAuth.r,
+        signedAuth.s,
+        attestor.address
+      )
       const receipt = await _transact(method, address)
       // console.log(receipt)
       if (!successfulTransact(receipt)) throw new Error('tx not successful')
@@ -190,14 +224,26 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
   const acceptRedemption = async (bearer, signedAuth) => {
     try {
       bearer = universalAccount(web3, bearer)
-      const auth = RougeUtils(web3.utils).authHash('acceptRedemption', address, bearer.address)
-      const method = instance.methods.acceptRedemption(auth, signedAuth.v, signedAuth.r, signedAuth.s, bearer.address)
+      const auth = RougeUtils(web3.utils).authHash(
+        'acceptRedemption',
+        address,
+        bearer.address
+      )
+      const method = instance.methods.acceptRedemption(
+        auth,
+        signedAuth.v,
+        signedAuth.r,
+        signedAuth.s,
+        bearer.address
+      )
       const receipt = await _transact(method, address)
       // console.log(receipt)
       if (!successfulTransact(receipt)) throw new Error('tx not successful')
       return Promise.resolve(receipt)
     } catch (e) {
-      return Promise.reject(new Error(`[rouge.js] acceptRedemption failed: ${e}`))
+      return Promise.reject(
+        new Error(`[rouge.js] acceptRedemption failed: ${e}`)
+      )
     }
   }
 
@@ -215,12 +261,19 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
   const _generateSignedAuth = (message, account) => {
     account = universalAccount(web3, account)
     // if context.as == account throw
-    return RougeUtils(web3.utils).authHashProtocolSig(message, address, account.address, context.as.privateKey)
+    return RougeUtils(web3.utils).authHashProtocolSig(
+      message,
+      address,
+      account.address,
+      context.as.privateKey
+    )
   }
 
   const $ = {
-    acceptAcquisitionSig$: account => _generateSignedAuth('acceptAcquisition', account),
-    acceptRedemptionSig$: account => _generateSignedAuth('acceptRedemption', account),
+    acceptAcquisitionSig$: account =>
+      _generateSignedAuth('acceptAcquisition', account),
+    acceptRedemptionSig$: account =>
+      _generateSignedAuth('acceptRedemption', account),
     removeAttestor,
     addAttestor,
     attachFuel,
@@ -232,31 +285,73 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
     redeemNote,
     acceptRedemption,
     kill,
-    get address () { return Promise.resolve(address) },
-    get tare () { return tare() },
-    get version () { return version() },
+    get address () {
+      return Promise.resolve(address)
+    },
+    get tare () {
+      return tare()
+    },
+    get version () {
+      return version()
+    },
 
-    get info () { return info() },
-    get issuer () { return issuer() },
-    get scheme () { return scheme() },
-    get expiration () { return expiration() },
-    get name () { return name() },
+    get info () {
+      return info()
+    },
+    get issuer () {
+      return issuer()
+    },
+    get scheme () {
+      return scheme()
+    },
+    get expiration () {
+      return expiration()
+    },
+    get name () {
+      return name()
+    },
 
-    get state () { return state() },
-    get issuance () { return issuance() },
-    get isIssued () { return isIssued() },
-    get available () { return available() },
-    get acquired () { return acquired() },
-    get redeemed () { return redeemed() },
+    get state () {
+      return state()
+    },
+    get issuance () {
+      return issuance()
+    },
+    get isIssued () {
+      return isIssued()
+    },
+    get available () {
+      return available()
+    },
+    get acquired () {
+      return acquired()
+    },
+    get redeemed () {
+      return redeemed()
+    },
 
-    get canAttach () { return canAttach() },
-    get canIssue () { return canIssue() },
-    get canDistribute () { return canDistribute() },
-    get canSignRedemption () { return canSignRedemption() },
-    get canKill () { return canKill() },
+    get canAttach () {
+      return canAttach()
+    },
+    get canIssue () {
+      return canIssue()
+    },
+    get canDistribute () {
+      return canDistribute()
+    },
+    get canSignRedemption () {
+      return canSignRedemption()
+    },
+    get canKill () {
+      return canKill()
+    },
 
-    get hasNote () { return hasNote(context.as.address) },
-    get hasRedeemed () { return hasRedeemed(context.as.address) },
+    get hasNote () {
+      return hasNote(context.as.address)
+    },
+    get hasRedeemed () {
+      return hasRedeemed(context.as.address)
+    },
     bearerHasNote: address => hasNote(address),
     getAllEvents
   }
@@ -268,7 +363,7 @@ export default function Campaign (web3, address, { context, _decodeLog }) {
 
   $.issue = async args => {
     const receipt = await _issue(args)
-    if (!successfulTransact(receipt)) throw new Error('can\'t issue campaign.')
+    if (!successfulTransact(receipt)) throw new Error("can't issue campaign.")
     return $
   }
 

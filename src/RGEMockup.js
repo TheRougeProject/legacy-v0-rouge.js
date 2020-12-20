@@ -1,4 +1,3 @@
-
 import { transact } from '../src/internalUtils'
 
 import RGEToken from 'rouge-protocol-solidity/build/contracts/TestRGEToken.json'
@@ -9,7 +8,8 @@ const globalOptions = {
   gasPrice: '100000'
 }
 
-const estimateAndDeploy = async contract => contract.deploy().send({ gas: await contract.deploy().estimateGas() })
+const estimateAndDeploy = async contract =>
+  contract.deploy().send({ gas: await contract.deploy().estimateGas() })
 
 export const sendTestRGE = (web3, rge, account, amount) =>
   transact(
@@ -38,7 +38,7 @@ export const generateRgeMockup = async (web3, owner) => {
 
   const tx1 = await transact(
     web3,
-    { as: {address: owner}, options: globalOptions },
+    { as: { address: owner }, options: globalOptions },
     factory.methods.setParams(rge.options.address, defaultTare),
     factory.options.address
   )
@@ -46,7 +46,7 @@ export const generateRgeMockup = async (web3, owner) => {
 
   const tx2 = await transact(
     web3,
-    { as: {address: owner}, options: globalOptions },
+    { as: { address: owner }, options: globalOptions },
     rge.methods.setFactory(factory.options.address),
     rge.options.address
   )

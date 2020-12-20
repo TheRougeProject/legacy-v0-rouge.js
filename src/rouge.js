@@ -1,10 +1,19 @@
-
 import RGEToken from 'rouge-protocol-solidity/build/contracts/RGETokenInterface.json'
 import RougeFactory from 'rouge-protocol-solidity/build/contracts/RougeFactory.json'
 import SimpleRougeCampaign from 'rouge-protocol-solidity/build/contracts/SimpleRougeCampaign.json'
 
-import { NetworkName, RougeProtocolAddress, RougeAuthorization } from './constants'
-import { universalAccount, universalScheme, sendTransaction, transact, successfulTransact } from './internalUtils'
+import {
+  NetworkName,
+  RougeProtocolAddress,
+  RougeAuthorization
+} from './constants'
+import {
+  universalAccount,
+  universalScheme,
+  sendTransaction,
+  transact,
+  successfulTransact
+} from './internalUtils'
 
 import RougeUtils from './utils'
 
@@ -48,42 +57,68 @@ function RougeProtocol (web3, context = {}) {
   const _utils = () => RougeUtils(web3.utils)
   const _transact = (...args) => transact(web3, context, ...args)
 
-  const RGE$address = async () => (context.rge || RougeProtocolAddress[await web3.eth.net.getId()].rge)
-  const RGE$web3instance = async () => new web3.eth.Contract(RGEToken.abi, await RGE$address(), {})
-  const RGE$balanceOf = async address => (await RGE$web3instance()).methods.balanceOf(address).call()
+  const RGE$address = async () =>
+    context.rge || RougeProtocolAddress[await web3.eth.net.getId()].rge
+  const RGE$web3instance = async () =>
+    new web3.eth.Contract(RGEToken.abi, await RGE$address(), {})
+  const RGE$balanceOf = async address =>
+    (await RGE$web3instance()).methods.balanceOf(address).call()
 
   // end with $ = non Promise object
   const RGE$ = Object.freeze({
-    get address () { return RGE$address() },
-    get web3instance () { return RGE$web3instance() },
+    get address () {
+      return RGE$address()
+    },
+    get web3instance () {
+      return RGE$web3instance()
+    },
     balanceOf: RGE$balanceOf
   })
 
-  const factory$address = async () => (await RGE$web3instance()).methods.factory().call()
-  const factory$web3instance = async () => new web3.eth.Contract(RougeFactory.abi, await factory$address())
-  const factory$rgeAddress = async () => (await factory$web3instance()).methods.rge().call()
-  const factory$version = async () => (await factory$web3instance()).methods.version().call()
-  const factory$tare = async () => (await factory$web3instance()).methods.tare().call()
+  const factory$address = async () =>
+    (await RGE$web3instance()).methods.factory().call()
+  const factory$web3instance = async () =>
+    new web3.eth.Contract(RougeFactory.abi, await factory$address())
+  const factory$rgeAddress = async () =>
+    (await factory$web3instance()).methods.rge().call()
+  const factory$version = async () =>
+    (await factory$web3instance()).methods.version().call()
+  const factory$tare = async () =>
+    (await factory$web3instance()).methods.tare().call()
 
   const factory$ = Object.freeze({
-    get address () { return factory$address() },
-    get web3instance () { return factory$web3instance() },
-    get version () { return factory$version() },
-    get tare () { return factory$tare() }
+    get address () {
+      return factory$address()
+    },
+    get web3instance () {
+      return factory$web3instance()
+    },
+    get version () {
+      return factory$version()
+    },
+    get tare () {
+      return factory$tare()
+    }
     // get balance () { return balanceOf$(context.account.address) }
     // get RGEbalance () { return factory$RGEbalance() },
   })
 
-  const status = () => Promise.all([
-    new Promise(resolve => resolve(web3.eth.net.getId().then(id => NetworkName[id]))),
-    RGE$address(),
-    factory$address(),
-    factory$version(),
-    factory$tare()
-  ])
+  const status = () =>
+    Promise.all([
+      new Promise(resolve =>
+        resolve(web3.eth.net.getId().then(id => NetworkName[id]))
+      ),
+      RGE$address(),
+      factory$address(),
+      factory$version(),
+      factory$tare()
+    ])
 
   const control = async () => {
-    if ((await RGE$address()).toLowerCase() !== (await factory$rgeAddress()).toLowerCase()) {
+    if (
+      (await RGE$address()).toLowerCase() !==
+      (await factory$rgeAddress()).toLowerCase()
+    ) {
       throw new Error('RGE protocol not ready: rge address not set in factory')
     }
     // TODO check event SetFactory(address indexed _rge, uint256 _tare) => store first block active factory
@@ -107,13 +142,20 @@ function RougeProtocol (web3, context = {}) {
     _blockNumber: log.blockNumber,
     _transactionHash: log.transactionHash,
     _log: log,
-    ...web3.eth.abi.decodeLog(_AbiEvents[name].inputs, log.data, log.topics.slice(1))
+    ...web3.eth.abi.decodeLog(
+      _AbiEvents[name].inputs,
+      log.data,
+      log.topics.slice(1)
+    )
   })
 
-  const account$ = () => Object.freeze({
-    get address () { return context.as.address }
-    // get RGE$balanceOf () { return balanceOf$(context.account.address) }
-  })
+  const account$ = () =>
+    Object.freeze({
+      get address () {
+        return context.as.address
+      }
+      // get RGE$balanceOf () { return balanceOf$(context.account.address) }
+    })
 
   const campaign$ = address => Campaign(web3, address, { context, _decodeLog })
 
@@ -123,11 +165,17 @@ function RougeProtocol (web3, context = {}) {
       const tare = web3.utils.toBN(await factory$tare())
       params.tokens = web3.utils.toBN(params.issuance).mul(tare)
     }
-    const { issuance, tokens, scheme, ...args } = { scheme: context.scheme, ...params }
+    const { issuance, tokens, scheme, ...args } = {
+      scheme: context.scheme,
+      ...params
+    }
     try {
       // always check if enough token ? only if check options
       // check enought RGE
-      const method = (await RGE$web3instance()).methods.newCampaign(issuance, tokens.toString())
+      const method = (await RGE$web3instance()).methods.newCampaign(
+        issuance,
+        tokens.toString()
+      )
       const receipt = await _transact(method, await RGE$address())
 
       // Log[0] transfer RGE to factory
@@ -148,9 +196,11 @@ function RougeProtocol (web3, context = {}) {
   }
 
   // TODO add protocol version ?
-  const getIssuedCampaignList = async ({issuer, scheme}) => {
+  const getIssuedCampaignList = async ({ issuer, scheme }) => {
     try {
-      const abiSignEvent = web3.eth.abi.encodeEventSignature(_AbiEvents.Issuance)
+      const abiSignEvent = web3.eth.abi.encodeEventSignature(
+        _AbiEvents.Issuance
+      )
       // const encodedScheme = web3.utils.padRight(scheme, 64)
       const logs = await web3.eth.getPastLogs({
         fromBlock: 1, // 4056827, should be factory/version create block by default per network ?
@@ -158,18 +208,24 @@ function RougeProtocol (web3, context = {}) {
       })
       return logs.map(log => {
         const tmp = _decodeLog('Issuance', log)
-        return { ...tmp, scheme: tmp.scheme.substring(0, 10), version: tmp.version.substring(0, 6) }
+        return {
+          ...tmp,
+          scheme: tmp.scheme.substring(0, 10),
+          version: tmp.version.substring(0, 6)
+        }
       })
     } catch (e) {
       throw new Error(`[rouge.js] getIssuedCampaignList failed: ${e}`)
     }
   }
 
-  const sendFinney = async ({fuel, recipient}) => {
+  const sendFinney = async ({ fuel, recipient }) => {
     try {
       recipient = universalAccount(web3, recipient)
       const rawTx = {
-        gasPrice: web3.utils.toHex(web3.utils.toWei(context.options.gasPrice, 'gwei')),
+        gasPrice: web3.utils.toHex(
+          web3.utils.toWei(context.options.gasPrice, 'gwei')
+        ),
         gasLimit: web3.utils.toHex(21000),
         to: recipient.address,
         value: web3.utils.toHex(web3.utils.toWei(fuel, 'finney'))
@@ -181,13 +237,23 @@ function RougeProtocol (web3, context = {}) {
   }
 
   const $ = {
-    get util$ () { return _utils() },
+    get util$ () {
+      return _utils()
+    },
     // get options$$ () { return context.options },
     // protocol object with properties (non Promise & end with $) // no blockchain mutation & no pipe
-    get AUTH$ () { return RougeAuthorization },
-    get RGE$ () { return RGE$ },
-    get factory$ () { return factory$ },
-    get account$ () { return account$() },
+    get AUTH$ () {
+      return RougeAuthorization
+    },
+    get RGE$ () {
+      return RGE$
+    },
+    get factory$ () {
+      return factory$
+    },
+    get account$ () {
+      return account$()
+    },
     campaign$,
     status,
     // verb => potential mutation, always return Promise, pipe always end

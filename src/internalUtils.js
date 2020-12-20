@@ -1,4 +1,3 @@
-
 export const universalAccount = (web3, arg) => {
   if (typeof arg === 'object') {
     // TODO regexp pkey)
@@ -30,16 +29,26 @@ export const sendTransaction = async (web3, context, rawTx) => {
   }
 }
 
-export const transact = async (web3, context, method, to, estimate, encoded) => {
+export const transact = async (
+  web3,
+  context,
+  method,
+  to,
+  estimate,
+  encoded
+) => {
   try {
     // possible workaround if incorrect ABI encoding &/or estimate...
-    if (!estimate) estimate = await method.estimateGas({ from: context.as.address })
+    if (!estimate)
+      estimate = await method.estimateGas({ from: context.as.address })
     if (!encoded) encoded = await method.encodeABI()
     // workaround issues https://github.com/ethereum/web3.js/issues/2441
     // https://github.com/ethereum/web3.js/issues/3175
     if (context.web3jsworkaroundoutofgas) estimate = estimate + 1
     const rawTx = {
-      gasPrice: web3.utils.toHex(web3.utils.toWei(context.options.gasPrice, 'gwei')),
+      gasPrice: web3.utils.toHex(
+        web3.utils.toWei(context.options.gasPrice, 'gwei')
+      ),
       gasLimit: web3.utils.toHex(estimate),
       to: to,
       value: '0x00',
@@ -53,4 +62,5 @@ export const transact = async (web3, context, method, to, estimate, encoded) => 
 
 // workaround : web3 1.0 return sometimes receipt.status = true/false, sometimes '0x1'/'0x0''
 
-export const successfulTransact = receipt => (receipt && (receipt.status || receipt.status === '0x1'))
+export const successfulTransact = receipt =>
+  receipt && (receipt.status || receipt.status === '0x1')

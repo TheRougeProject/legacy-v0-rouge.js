@@ -1,4 +1,3 @@
-
 import hex64 from 'hex64'
 
 // web3-eth-accounts also depends on elliptic
@@ -19,16 +18,25 @@ const RougeUtils = web3Utils => {
     return curve
   }
 
-  const authHash = (msg, campaign, bearer) => web3Utils.soliditySha3(
-    {t: 'string', v: msg}, {t: 'address', v: campaign}, {t: 'address', v: bearer}
-  )
+  const authHash = (msg, campaign, bearer) =>
+    web3Utils.soliditySha3(
+      { t: 'string', v: msg },
+      { t: 'address', v: campaign },
+      { t: 'address', v: bearer }
+    )
 
   function hashMessage (message) {
-    return web3Utils.sha3(bytes.concat([
-      web3Utils.hexToBytes(web3Utils.utf8ToHex('\x19Ethereum Signed Message:\n')),
-      web3Utils.hexToBytes(web3Utils.utf8ToHex(String(message.length))),
-      ((typeof (message) === 'string') ? web3Utils.hexToBytes(web3Utils.utf8ToHex(message)) : message)
-    ]))
+    return web3Utils.sha3(
+      bytes.concat([
+        web3Utils.hexToBytes(
+          web3Utils.utf8ToHex('\x19Ethereum Signed Message:\n')
+        ),
+        web3Utils.hexToBytes(web3Utils.utf8ToHex(String(message.length))),
+        typeof message === 'string'
+          ? web3Utils.hexToBytes(web3Utils.utf8ToHex(message))
+          : message
+      ])
+    )
   }
 
   function sign (privateKey, digest) {
@@ -40,34 +48,39 @@ const RougeUtils = web3Utils => {
       s: bytes.hexZeroPad('0x' + signature.s.toString(16), 32),
       v: 27 + signature.recoveryParam
     }
-  };
+  }
 
   const authHashProtocolSig = (msg, campaign, bearer, privateKey) => {
     const hash = authHash(msg, campaign, bearer)
-    const digest = hashMessage(web3Utils.hexToBytes(
-      web3Utils.utf8ToHex('Rouge ID: ' + hash.substr(2))
-    ))
+    const digest = hashMessage(
+      web3Utils.hexToBytes(web3Utils.utf8ToHex('Rouge ID: ' + hash.substr(2)))
+    )
     return sign(privateKey, web3Utils.hexToBytes(digest))
   }
 
   function authHashRpcSig (msg, campaign, bearer, privateKey) {
     // check pkey with 0x
     const hash = authHash(msg, campaign, bearer)
-    return bytes.joinSignature(
-      sign(privateKey, web3Utils.hexToBytes(hash))
-    )
+    return bytes.joinSignature(sign(privateKey, web3Utils.hexToBytes(hash)))
   }
 
   function rougeQR (msg, campaign, bearer, privateKey) {
     // check pkey with 0x
     const rpcSig = authHashRpcSig(msg, campaign, bearer, privateKey)
-    return hex64.toBase64(bearer.substr(2) + rpcSig.substr(2) + web3Utils.utf8ToHex(msg).substr(2))
+    return hex64.toBase64(
+      bearer.substr(2) + rpcSig.substr(2) + web3Utils.utf8ToHex(msg).substr(2)
+    )
   }
 
   function recoverPublicKey (digest, signature) {
     const sig = bytes.splitSignature(signature)
     const rs = { r: bytes.arrayify(sig.r), s: bytes.arrayify(sig.s) }
-    return '0x' + getCurve().recoverPubKey(bytes.arrayify(digest), rs, sig.recoveryParam).encode('hex', false)
+    return (
+      '0x' +
+      getCurve()
+        .recoverPubKey(bytes.arrayify(digest), rs, sig.recoveryParam)
+        .encode('hex', false)
+    )
   }
 
   function computePublicKey (key, compressed) {
@@ -85,12 +98,22 @@ const RougeUtils = web3Utils => {
       if (compressed) {
         return bytes.hexlify(_bytes)
       }
-      return '0x' + getCurve().keyFromPublic(_bytes).getPublic(false, 'hex')
+      return (
+        '0x' +
+        getCurve()
+          .keyFromPublic(_bytes)
+          .getPublic(false, 'hex')
+      )
     } else if (_bytes.length === 65) {
       if (!compressed) {
         return bytes.hexlify(_bytes)
       }
-      return '0x' + getCurve().keyFromPublic(_bytes).getPublic(true, 'hex')
+      return (
+        '0x' +
+        getCurve()
+          .keyFromPublic(_bytes)
+          .getPublic(true, 'hex')
+      )
     }
     throw new Error('invalid public or private key')
   }
@@ -101,10 +124,12 @@ const RougeUtils = web3Utils => {
   }
 
   function checkSignature (msg, campaign, bearer, signature) {
-    const recovered = computeAddress(recoverPublicKey(
-      bytes.arrayify(authHash(msg, campaign, bearer)),
-      bytes.splitSignature(signature)
-    ))
+    const recovered = computeAddress(
+      recoverPublicKey(
+        bytes.arrayify(authHash(msg, campaign, bearer)),
+        bytes.splitSignature(signature)
+      )
+    )
     return recovered.toLowerCase() === bearer.toLowerCase()
   }
 
@@ -114,11 +139,14 @@ const RougeUtils = web3Utils => {
     const signature = '0x' + raw.slice(40, 170)
     const msg = web3Utils.hexToAscii('0x' + raw.slice(170, raw.length))
     const campaign = getCampaign(msg, bearer)
-    if (!/^0x[0-9a-f]{40}$/i.test(campaign)) throw new Error('Invalid Rouge QR code')
-    if (/^0x[0-9a-f]{40}$/i.test(bearer) &&
-        /^0x[0-9a-f]{130}$/i.test(signature)) {
+    if (!/^0x[0-9a-f]{40}$/i.test(campaign))
+      throw new Error('Invalid Rouge QR code')
+    if (
+      /^0x[0-9a-f]{40}$/i.test(bearer) &&
+      /^0x[0-9a-f]{130}$/i.test(signature)
+    ) {
       if (checkSignature(msg, campaign, bearer, signature)) {
-        return {msg, campaign, bearer}
+        return { msg, campaign, bearer }
       } else {
         throw new Error('Invalid Rouge QR signature')
       }
@@ -128,7 +156,12 @@ const RougeUtils = web3Utils => {
   }
 
   return Object.freeze({
-    version: '__version__', authHash, authHashProtocolSig, authHashRpcSig, rougeQR, decodeRougeQR
+    version: '__version__',
+    authHash,
+    authHashProtocolSig,
+    authHashRpcSig,
+    rougeQR,
+    decodeRougeQR
   })
 }
 

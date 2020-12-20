@@ -1,7 +1,7 @@
 /* eslint-disable no-var */
 
 export function isHexable (value) {
-  return !!(value.toHexString)
+  return !!value.toHexString
 }
 
 export function addSlice (array) {
@@ -16,8 +16,11 @@ export function addSlice (array) {
 }
 
 export function isArrayish (value) {
-  // eslint-disable-next-line eqeqeq
-  if (!value || parseInt(String(value.length)) != value.length || typeof (value) === 'string') {
+  if (
+    !value || // eslint-disable-next-line eqeqeq
+    parseInt(String(value.length)) != value.length ||
+    typeof value === 'string'
+  ) {
     return false
   }
   for (var i = 0; i < value.length; i++) {
@@ -37,7 +40,7 @@ export function arrayify (value) {
   if (isHexable(value)) {
     value = value.toHexString()
   }
-  if (typeof (value) === 'string') {
+  if (typeof value === 'string') {
     var match = value.match(/^(0x)?[0-9a-fA-F]*$/)
     if (!match) {
       throw new Error('invalid hexidecimal string')
@@ -106,7 +109,7 @@ export function padZeros (value, length) {
 }
 
 export function isHexString (value, length) {
-  if (typeof (value) !== 'string' || !value.match(/^0x[0-9A-Fa-f]*$/)) {
+  if (typeof value !== 'string' || !value.match(/^0x[0-9A-Fa-f]*$/)) {
     return false
   }
   if (length && value.length !== 2 + 2 * length) {
@@ -120,7 +123,7 @@ export function hexlify (value) {
   if (isHexable(value)) {
     return value.toHexString()
   }
-  if (typeof (value) === 'number') {
+  if (typeof value === 'number') {
     if (value < 0) {
       throw new Error('cannot hexlify negative value')
     }
@@ -142,7 +145,7 @@ export function hexlify (value) {
     }
     return '0x00'
   }
-  if (typeof (value) === 'string') {
+  if (typeof value === 'string') {
     var match = value.match(/^(0x)?[0-9a-fA-F]*$/)
     if (!match) {
       throw new Error('invalid hexidecimal string')
@@ -167,7 +170,7 @@ export function hexlify (value) {
 }
 
 export function hexDataLength (data) {
-  if (!isHexString(data) || (data.length % 2) !== 0) {
+  if (!isHexString(data) || data.length % 2 !== 0) {
     return null
   }
   return (data.length - 2) / 2
@@ -177,7 +180,7 @@ export function hexDataSlice (data, offset, endOffset) {
   if (!isHexString(data)) {
     throw new Error('invalid hex data')
   }
-  if ((data.length % 2) !== 0) {
+  if (data.length % 2 !== 0) {
     throw new Error('hex data length must be even')
   }
   offset = 2 + 2 * offset
@@ -208,12 +211,13 @@ export function hexZeroPad (value, length) {
 }
 
 export function isSignature (value) {
-  return (value && value.r != null && value.s != null)
+  return value && value.r != null && value.s != null
 }
 
 export function splitSignature (signature) {
   var v = 0
-  var r = '0x'; var s = '0x'
+  var r = '0x'
+  var s = '0x'
   if (isSignature(signature)) {
     if (signature.v == null && signature.recoveryParam == null) {
       throw new Error('at least on of recoveryParam or v must be specified')
@@ -221,7 +225,7 @@ export function splitSignature (signature) {
     r = hexZeroPad(signature.r, 32)
     s = hexZeroPad(signature.s, 32)
     v = signature.v
-    if (typeof (v) === 'string') {
+    if (typeof v === 'string') {
       v = parseInt(v, 16)
     }
     var recoveryParam = signature.recoveryParam
@@ -244,16 +248,18 @@ export function splitSignature (signature) {
   return {
     r: r,
     s: s,
-    recoveryParam: (v - 27),
+    recoveryParam: v - 27,
     v: v
   }
 }
 
 export function joinSignature (signature) {
   signature = splitSignature(signature)
-  return hexlify(concat([
-    signature.r,
-    signature.s,
-    (signature.recoveryParam ? '0x1c' : '0x1b')
-  ]))
+  return hexlify(
+    concat([
+      signature.r,
+      signature.s,
+      signature.recoveryParam ? '0x1c' : '0x1b'
+    ])
+  )
 }

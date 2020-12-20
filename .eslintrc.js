@@ -1,8 +1,11 @@
 module.exports = {
-  parser: "babel-eslint",
-  extends: "standard",
-  env: {
-    node: true
+  "env": {
+    "es2020": true,
+    "node": true,
+    "jest": true
+  },
+  "parserOptions": {
+    "sourceType": "module"
   },
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',

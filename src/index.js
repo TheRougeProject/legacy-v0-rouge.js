@@ -1,4 +1,3 @@
-
 import RougeUtils from './utils'
 import RougeProtocol from './rouge'
 

@@ -1,4 +1,3 @@
-
 /* global beforeAll:true describe:true test:true expect:true */
 
 import { RougeProtocol } from '../src/index'
@@ -6,10 +5,11 @@ import { RougeProtocol } from '../src/index'
 import { initializeWeb3 } from './helpers.js'
 
 let mockup
-beforeAll(async () => { mockup = await initializeWeb3() })
+beforeAll(async () => {
+  mockup = await initializeWeb3()
+})
 
 describe('RougeProtocol(web3)', () => {
-
   let rouge
 
   test('should return rouge object', () => {
@@ -22,26 +22,23 @@ describe('RougeProtocol(web3)', () => {
   })
 
   describe('rouge object is not extensible', () => {
-    test(
-      'adding attribut to campaign object should Throw',
-      () => {
-        expect(() => { rouge.newAttribut = true }).toThrow()
-      }
-    )
+    test('adding attribut to campaign object should Throw', () => {
+      expect(() => {
+        rouge.newAttribut = true
+      }).toThrow()
+    })
   })
 
   describe('rouge.RGE$.address', () => {
-    test(
-      'should return RGE token address',
-      () => expect(rouge.RGE$.address).resolves.toEqual(mockup.rge.options.address)
-    )
+    test('should return RGE token address', () =>
+      expect(rouge.RGE$.address).resolves.toEqual(mockup.rge.options.address))
   })
 
   describe('rouge.RGE$.factory', () => {
-    test(
-      'should return factory contract address',
-      () => expect(rouge.factory$.address).resolves.toEqual(mockup.factory.options.address)
-    )
+    test('should return factory contract address', () =>
+      expect(rouge.factory$.address).resolves.toEqual(
+        mockup.factory.options.address
+      ))
   })
 
   describe('rouge.RGE$.as(account)', () => {
@@ -49,5 +46,4 @@ describe('RougeProtocol(web3)', () => {
       expect(rouge.as(mockup.accounts[0])).toBe(rouge)
     })
   })
-
 })
