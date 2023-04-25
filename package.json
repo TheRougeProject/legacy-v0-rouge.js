@@ -2,8 +2,8 @@
   "name": "rouge.js",
   "version": "0.5.3",
   "license": "AGPL-3.0-only",
-  "description": "Javascript library for interacting with the Rouge protocol",
-  "repository": "TheRougeProject/rouge.js",
+  "description": "[DEPRECATED] Javascript library for interacting with the Rouge Protocol V0",
+  "repository": "TheRougeProject/legacy-v0-rouge.js.git",
   "keywords": [
     "rouge.js",
     "rge",
